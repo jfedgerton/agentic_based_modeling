@@ -1,0 +1,57 @@
+# Default experiment configuration
+
+experiment:
+  name: "default_experiment"
+  random_seed: 42
+  num_steps: 100
+  num_replications: 5
+  output_dir: "outputs"
+  log_dir: "logs"
+
+# Prisoner's Dilemma Grid defaults
+pd_grid:
+  width: 20
+  height: 20
+  payoff_matrix:
+    # (my_action, their_action) -> my_payoff
+    CC: 3  # both cooperate
+    CD: 0  # I cooperate, they defect
+    DC: 5  # I defect, they cooperate
+    DD: 1  # both defect
+  initial_cooperation_prob: 0.5
+  neighborhood: "moore"  # "moore" or "von_neumann"
+
+# Civil Violence defaults
+civil_violence:
+  width: 40
+  height: 40
+  citizen_density: 0.7
+  cop_density: 0.04
+  citizen_vision: 7
+  cop_vision: 7
+  legitimacy: 0.82
+  max_jail_term: 30
+  movement: true
+
+# Agent architecture
+agent:
+  type: "classic"  # "classic", "llm", "hybrid"
+
+# LLM configuration
+llm:
+  provider: "mock"  # "openai", "anthropic", "mock"
+  model: "gpt-4o-mini"
+  temperature: 0.0
+  max_tokens: 256
+  cache_enabled: true
+  cache_dir: ".llm_cache"
+  rate_limit_delay: 0.1  # seconds between API calls
+
+# Logging
+logging:
+  level: "INFO"
+  log_prompts: true
+  log_responses: true
+  log_rationales: true
+  log_parse_failures: true
+  log_metrics: true
