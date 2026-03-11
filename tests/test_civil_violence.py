@@ -56,6 +56,39 @@ class TestCivilViolenceLLM:
         )
         model.step()
 
+
+    def test_cops_can_arrest_llm_citizens(self):
+        import json
+        from src.agents.classic_cv import ClassicCopAgent, JAILED
+
+        provider = MockProvider(rate_limit_delay=0)
+        provider.set_response("citizen", json.dumps({
+            "observed_state_summary": "Mock citizen observation",
+            "beliefs": {"expected_neighbor_behavior": "active",
+                        "risk_assessment": "low"},
+            "action": "ACTIVE",
+            "confidence": 0.9,
+            "short_rationale": "I will rebel.",
+        }))
+
+        model = CivilViolenceModel(
+            width=5, height=5, citizen_density=0.3, cop_density=0.3,
+            citizen_vision=7, cop_vision=7, movement=False,
+            agent_type="llm", llm_provider=provider, seed=42,
+        )
+
+        model.step()
+
+        jailed_count = sum(
+            1 for a in model.agents
+            if hasattr(a, "state") and a.state == JAILED
+        )
+        assert jailed_count > 0
+
+        for cop in [a for a in model.agents if isinstance(a, ClassicCopAgent)]:
+            obs = cop.get_local_observation()
+            assert "actives_nearby" in obs
+
     def test_requires_provider(self):
         with pytest.raises(ValueError, match="LLM provider required"):
             CivilViolenceModel(
