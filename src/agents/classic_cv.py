@@ -143,17 +143,26 @@ class ClassicCopAgent(BaseAgent):
         neighbors = self.model.grid.get_neighbors(
             self.pos, moore=True, radius=self.vision)
         actives = [n for n in neighbors
-                   if isinstance(n, ClassicCitizenAgent) and n.state == ACTIVE]
+                   if self._is_active_citizen(n)]
         return {
             "actives_nearby": len(actives),
         }
+
+    @staticmethod
+    def _is_citizen(agent) -> bool:
+        """Citizen-like agents expose the Civil Violence state attributes."""
+        return hasattr(agent, "state") and hasattr(agent, "jail_term")
+
+    @classmethod
+    def _is_active_citizen(cls, agent) -> bool:
+        return cls._is_citizen(agent) and agent.state == ACTIVE
 
     def step(self):
         """Arrest a random active citizen in vision, then move."""
         neighbors = self.model.grid.get_neighbors(
             self.pos, moore=True, radius=self.vision)
         actives = [n for n in neighbors
-                   if isinstance(n, ClassicCitizenAgent) and n.state == ACTIVE]
+                   if self._is_active_citizen(n)]
 
         if actives:
             target = self.random.choice(actives)
