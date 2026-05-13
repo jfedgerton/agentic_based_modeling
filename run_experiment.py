@@ -18,16 +18,16 @@ def main():
     parser = argparse.ArgumentParser(
         description="ABM-LLM Benchmark Experiment Runner")
     parser.add_argument("--model", type=str, default="pd_grid",
-                        choices=["pd_grid", "civil_violence"],
+                        choices=["pd_grid", "civil_violence", "interstate_conflict", "jury_deliberation"],
                         help="Which model to run")
     parser.add_argument("--agent", type=str, default="classic",
                         choices=["classic", "llm", "hybrid"],
                         help="Agent architecture")
     parser.add_argument("--provider", type=str, default="mock",
-                        choices=["openai", "anthropic", "mock"],
+                        choices=["openai", "anthropic", "gemini", "deepseek", "doubao", "mock"],
                         help="LLM provider (for llm/hybrid agents)")
     parser.add_argument("--llm-model", type=str, default=None,
-                        help="LLM model name (e.g. gpt-4o-mini)")
+                        help="LLM model name (e.g. gpt-5.4-mini)")
     parser.add_argument("--temperature", type=float, default=0.0,
                         help="LLM temperature")
     parser.add_argument("--seeds", type=int, nargs="+", default=[42, 43, 44],
@@ -82,3 +82,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
