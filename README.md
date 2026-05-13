@@ -10,6 +10,8 @@ Do LLM-based agents produce systematically different emergent dynamics compared 
 
 1. **Prisoner's Dilemma Grid** — Strategic interaction on a spatial grid (Nowak & May 1992)
 2. **Epstein Civil Violence** — Political behavior under grievance and repression (Epstein 2002)
+3. **Interstate Conflict** — Spatial bargaining with private capability, costly war, and bluffing signals (Fearon 1995)
+4. **Jury Deliberation** — 12-juror full-mesh deliberation with status-weighted belief updates (DeGroot 1974)
 
 ## Agent Architectures
 

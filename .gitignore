@@ -31,3 +31,9 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+
+# Personal docs (not pushed to GitHub)
+RA_CHECKLIST.md
+RA_CHECKLIST(new).md
+interstate_conflict_pipeline_v3.3_zh.md
+jury_pipeline_v1.1_zh.md

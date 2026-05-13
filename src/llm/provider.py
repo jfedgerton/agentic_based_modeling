@@ -68,7 +68,7 @@ class OpenAIProvider(LLMProvider):
     """OpenAI API provider."""
 
     def __init__(self, **kwargs):
-        model = kwargs.pop("model", "gpt-4o-mini")
+        model = kwargs.pop("model", "gpt-5.4-mini")
         super().__init__(model=model, **kwargs)
         from openai import OpenAI
         self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -108,6 +108,83 @@ class AnthropicProvider(LLMProvider):
         return response.content[0].text
 
 
+class GeminiProvider(LLMProvider):
+    """Google Gemini API provider."""
+
+    def __init__(self, **kwargs):
+        model = kwargs.pop("model", "gemini-3.1-flash-lite")
+        super().__init__(model=model, **kwargs)
+        import google.generativeai as genai
+        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+        self.client = genai.GenerativeModel(model)
+
+    def _call_api(self, prompt: str) -> str:
+        response = self.client.generate_content(
+            prompt,
+            generation_config={
+                "temperature": self.temperature,
+                "max_output_tokens": self.max_tokens,
+            },
+        )
+        usage = getattr(response, "usage_metadata", None)
+        if usage:
+            self._total_prompt_tokens += getattr(usage, "prompt_token_count", 0)
+            self._total_completion_tokens += getattr(usage, "candidates_token_count", 0)
+        return response.text
+
+
+class DeepSeekProvider(LLMProvider):
+    """DeepSeek API provider (uses OpenAI-compatible endpoint)."""
+
+    def __init__(self, **kwargs):
+        model = kwargs.pop("model", "deepseek-v4-flash")
+        super().__init__(model=model, **kwargs)
+        from openai import OpenAI
+        self.client = OpenAI(
+            api_key=os.environ.get("DEEPSEEK_API_KEY"),
+            base_url="https://api.deepseek.com",
+        )
+
+    def _call_api(self, prompt: str) -> str:
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=self.temperature,
+            max_tokens=self.max_tokens,
+        )
+        usage = response.usage
+        if usage:
+            self._total_prompt_tokens += usage.prompt_tokens
+            self._total_completion_tokens += usage.completion_tokens
+        return response.choices[0].message.content
+
+
+class DoubaoSeedLiteProvider(LLMProvider):
+    """Doubao Seed Lite API provider (Volcengine, OpenAI-compatible endpoint)."""
+
+    def __init__(self, **kwargs):
+        model = kwargs.pop("model", "Doubao-Seed-2.0-lite")
+        super().__init__(model=model, **kwargs)
+        from openai import OpenAI
+        self.client = OpenAI(
+            api_key=os.environ.get("DOUBAO_API_KEY"),
+            base_url="https://ark.cn-beijing.volces.com/api/v3",
+        )
+
+    def _call_api(self, prompt: str) -> str:
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=self.temperature,
+            max_tokens=self.max_tokens,
+        )
+        usage = response.usage
+        if usage:
+            self._total_prompt_tokens += usage.prompt_tokens
+            self._total_completion_tokens += usage.completion_tokens
+        return response.choices[0].message.content
+
+
 class MockProvider(LLMProvider):
     """Mock LLM provider for testing. Returns deterministic responses."""
 
@@ -145,6 +222,8 @@ def get_provider(provider_name: str, cache: Optional[PromptCache] = None,
     providers = {
         "openai": OpenAIProvider,
         "anthropic": AnthropicProvider,
+        "gemini": GeminiProvider,
+        "deepseek": DeepSeekProvider,
         "mock": MockProvider,
     }
     if provider_name not in providers:
