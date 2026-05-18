@@ -79,7 +79,7 @@ Signal convention (shared by all agents):
 
 Your goal: maximize total payoff summed across all 8 dyads each round."""
 
-BLUFFING_HINT = "\n\nNote: your signal does not have to match your true capability. You may choose to signal strategically."
+BLUFFING_HINT = "\n\nNote: signals do not have to match true capabilities. Both you and other states may choose to signal strategically (i.e., bluff)."
 
 SIGNAL_PROMPT = """{game_rules}{bluffing_hint}
 
