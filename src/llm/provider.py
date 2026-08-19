@@ -65,7 +65,16 @@ class LLMProvider(ABC):
 
 
 class OpenAIProvider(LLMProvider):
-    """OpenAI API provider."""
+    """OpenAI API provider.
+
+    Supports both legacy models (gpt-4o, gpt-4o-mini, etc.) and newer
+    model families (gpt-5.x, o1, o3, o4) that require different API params:
+      - Use ``max_completion_tokens`` instead of ``max_tokens``
+      - Do not pass ``temperature`` (only default value 1 is accepted)
+    """
+
+    # Model name prefixes that require the new API parameter set.
+    _NEW_API_PREFIXES = ("gpt-5", "o1", "o3", "o4")
 
     def __init__(self, **kwargs):
         model = kwargs.pop("model", "gpt-5.4-mini")
@@ -73,13 +82,25 @@ class OpenAIProvider(LLMProvider):
         from openai import OpenAI
         self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
+    def _is_new_api_model(self) -> bool:
+        return self.model.startswith(self._NEW_API_PREFIXES)
+
     def _call_api(self, prompt: str) -> str:
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=self.temperature,
-            max_tokens=self.max_tokens,
-        )
+        if self._is_new_api_model():
+            # gpt-5.x / o-series: use max_completion_tokens, no temperature
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                max_completion_tokens=self.max_tokens,
+            )
+        else:
+            # Legacy models (gpt-4o, gpt-4o-mini, etc.)
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=self.temperature,
+                max_tokens=self.max_tokens,
+            )
         usage = response.usage
         if usage:
             self._total_prompt_tokens += usage.prompt_tokens
@@ -186,33 +207,178 @@ class DoubaoSeedLiteProvider(LLMProvider):
 
 
 class MockProvider(LLMProvider):
-    """Mock LLM provider for testing. Returns deterministic responses."""
+    """Mock LLM provider for testing.
 
-    def __init__(self, **kwargs):
+    Returns canned JSON responses appropriate for the (game, mode) combination
+    so tests run without real API calls. For IC, auto-detects SIGNAL vs DECIDE
+    phase from prompt content.
+
+    Calculator-mode responses omit the ``beliefs`` field (per the design rule
+    in prompts_revised.md — Calculator JSON is bare).
+    """
+
+    _VALID_GAMES = ("pd", "cv", "ic")
+    _VALID_MODES = ("calculator", "reasoner", "roleplayer")
+    _VALID_SIGNAL_FORMS = ("categorical", "free_form_text")
+
+    def __init__(self, *, game: str, mode: str,
+                 signal_form: str = "categorical", **kwargs):
+        if game not in self._VALID_GAMES:
+            raise ValueError(
+                f"unknown game: {game!r}. Expected one of {self._VALID_GAMES}"
+            )
+        if mode not in self._VALID_MODES:
+            raise ValueError(
+                f"unknown mode: {mode!r}. Expected one of {self._VALID_MODES}"
+            )
+        if signal_form not in self._VALID_SIGNAL_FORMS:
+            raise ValueError(
+                f"unknown signal_form: {signal_form!r}. "
+                f"Expected one of {self._VALID_SIGNAL_FORMS}"
+            )
+        # Mock has no real API — always force rate_limit_delay=0. The config
+        # default (0.1 sec for real providers) would otherwise add ~5 hours
+        # to a 1000-agent × 50-step run for no reason.
+        kwargs["rate_limit_delay"] = 0
+        if signal_form == "free_form_text" and (game != "ic" or mode != "roleplayer"):
+            raise ValueError(
+                "signal_form='free_form_text' is only valid for game='ic', mode='roleplayer'"
+            )
+
         model = kwargs.pop("model", "mock-v1")
         super().__init__(model=model, **kwargs)
+        self.game = game
+        self.mode = mode
+        self.signal_form = signal_form
         self._mock_responses = {}
 
     def set_response(self, prompt_substring: str, response: str):
-        """Register a mock response for prompts containing the given substring."""
+        """Register a mock response override for prompts containing the substring."""
         self._mock_responses[prompt_substring] = response
 
     def _call_api(self, prompt: str) -> str:
-        # Check for registered mock responses
+        # Explicit overrides win
         for substring, response in self._mock_responses.items():
             if substring in prompt:
                 return response
 
-        # Default: return a valid cooperate decision for PD
-        return json.dumps({
-            "observed_state_summary": "Mock observation of local neighborhood.",
+        if self.game == "pd":
+            return self._pd_response()
+        if self.game == "cv":
+            return self._cv_response()
+        if self.game == "ic":
+            phase = self._detect_ic_phase(prompt)
+            return self._ic_response(phase)
+        # Defensive — should be unreachable due to __init__ validation
+        raise ValueError(f"internal error: unknown game {self.game!r}")
+
+    @staticmethod
+    def _detect_ic_phase(prompt: str) -> str:
+        """Detect SIGNAL vs DECIDE from IC prompt content."""
+        signal_markers = (
+            "PHASE 1: SIGNAL",
+            "What signal do you broadcast",
+            "what statement do you issue",
+        )
+        if any(marker in prompt for marker in signal_markers):
+            return "signal"
+        return "decide"
+
+    def _beliefs_block(self) -> dict:
+        # Calculator mode JSON omits beliefs (per prompts_revised.md)
+        if self.mode == "calculator":
+            return {}
+        return {
             "beliefs": {
                 "expected_neighbor_behavior": "uncertain",
                 "risk_assessment": "low",
-            },
-            "action": "COOPERATE",
+            }
+        }
+
+    def _pd_response(self) -> str:
+        action_by_mode = {
+            "calculator": "A",
+            "reasoner": "COOPERATE",
+            "roleplayer": "OPEN",
+        }
+        return json.dumps({
+            "observed_state_summary": "Mock PD observation.",
+            **self._beliefs_block(),
+            "action": action_by_mode[self.mode],
             "confidence": 0.5,
-            "short_rationale": "Mock agent default response.",
+            "short_rationale": "Mock PD response.",
+        })
+
+    def _cv_response(self) -> str:
+        action_by_mode = {
+            "calculator": "A",
+            "reasoner": "QUIET",
+            "roleplayer": "STAY_HOME",
+        }
+        return json.dumps({
+            "observed_state_summary": "Mock CV observation.",
+            **self._beliefs_block(),
+            "action": action_by_mode[self.mode],
+            "confidence": 0.5,
+            "short_rationale": "Mock CV response.",
+        })
+
+    def _ic_response(self, phase: str) -> str:
+        if phase == "signal":
+            if self.signal_form == "free_form_text":
+                return json.dumps({
+                    "observed_state_summary": "Mock IC observation.",
+                    **self._beliefs_block(),
+                    "signal_text": "We maintain a balanced military posture.",
+                    "confidence": 0.5,
+                    "short_rationale": "Mock IC free-form signal.",
+                })
+            signal_by_mode = {
+                "calculator": "S1",
+                "reasoner": "STRONG",
+                "roleplayer": "STRONG",
+            }
+            return json.dumps({
+                "observed_state_summary": "Mock IC observation.",
+                **self._beliefs_block(),
+                "signal": signal_by_mode[self.mode],
+                "confidence": 0.5,
+                "short_rationale": "Mock IC signal.",
+            })
+
+        # DECIDE phase — generate 8 mock per-neighbor decisions
+        decisions = []
+        for i in range(8):
+            if self.mode == "calculator":
+                role = "role_X" if i % 2 == 0 else "role_Y"
+                decisions.append({
+                    "id": i,
+                    "role": role,
+                    "value": 0.5,
+                    "rationale": "mock",
+                })
+            else:
+                # Reasoner / Role-player share the same JSON shape
+                if i % 2 == 0:
+                    decisions.append({
+                        "neighbor_id": i,
+                        "role": "proposer",
+                        "demand": 0.5,
+                        "rationale": "mock",
+                    })
+                else:
+                    decisions.append({
+                        "neighbor_id": i,
+                        "role": "responder",
+                        "threshold": 0.5,
+                        "rationale": "mock",
+                    })
+        return json.dumps({
+            "observed_state_summary": "Mock IC observation.",
+            **self._beliefs_block(),
+            "decisions": decisions,
+            "confidence": 0.5,
+            "short_rationale": "Mock IC decide.",
         })
 
 
@@ -224,6 +390,7 @@ def get_provider(provider_name: str, cache: Optional[PromptCache] = None,
         "anthropic": AnthropicProvider,
         "gemini": GeminiProvider,
         "deepseek": DeepSeekProvider,
+        "doubao": DoubaoSeedLiteProvider,
         "mock": MockProvider,
     }
     if provider_name not in providers:

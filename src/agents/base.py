@@ -1,6 +1,6 @@
 """Base agent class and shared data structures.
 
-All agent architectures (classic, LLM, hybrid) inherit from BaseAgent,
+All agent architectures (classic, LLM) inherit from BaseAgent,
 ensuring a uniform interface for decision-making across models.
 """
 

@@ -37,8 +37,21 @@ RA_CHECKLIST.md
 RA_CHECKLIST(new).md
 interstate_conflict_pipeline_v3.3_zh.md
 jury_pipeline_v1.1_zh.md
+four_games_summary.md
 
-# Personal docs hidden from GitHub display
+# Caches / scratch
+.llm_cache_bad/
+.pytest_cache/
+.Rhistory
+
+# Not part of the core codebase backup
+_archive/
+paper_code/
+
+# Prompt design & pipeline notes (kept local)
+prompts_revised.md
+prompts_revised2.md
+three_games_summary.md
 interstate_conflict_pipeline.md
 jury_pipeline.md
-CHANGELOG.md
+update note.docx

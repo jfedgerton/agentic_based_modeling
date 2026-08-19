@@ -3,7 +3,7 @@
 A spatial Fearon bargaining game on a 2D grid. Each cell is a state with
 private capability and war_cost. Each step, every state simultaneously
 bargains with all 8 Moore neighbors through signal -> demand -> resolve.
-Supports classic, LLM, and hybrid agent architectures.
+Supports classic and LLM agent architectures.
 
 Based on Fearon (1995) "Rationalist Explanations for War", International
 Organization 49(3): 379-414.
@@ -18,7 +18,6 @@ from mesa.datacollection import DataCollector
 
 from src.agents.classic_interstate_conflict import ClassicInterstateConflictAgent
 from src.agents.llm_interstate_conflict import LLMInterstateConflictAgent
-from src.agents.hybrid_interstate_conflict import HybridInterstateConflictAgent
 from src.llm.provider import LLMProvider
 from src.utils.logging import ExperimentLogger
 
@@ -87,6 +86,8 @@ class InterstateConflictModel(Model):
 
     def __init__(self, width: int = 20, height: int = 20,
                  agent_type: str = "classic",
+                 mode: Optional[str] = None,
+                 signal_form: str = "categorical",
                  bluffing_enabled: bool = True,
                  bluffing_rate: float = 0.3,
                  capability_dist: Tuple[float, float] = (2.0, 2.0),
@@ -98,9 +99,21 @@ class InterstateConflictModel(Model):
                  seed: Optional[int] = None):
         super().__init__(seed=seed)
 
+        # Cross-IV validation
+        if signal_form == "free_form_text":
+            if mode != "roleplayer":
+                raise ValueError(
+                    "signal_form='free_form_text' is only valid for mode='roleplayer'"
+                )
+            if not bluffing_enabled:
+                raise ValueError(
+                    "signal_form='free_form_text' requires bluffing_enabled=True"
+                )
+
         self.width = width
         self.height = height
         self.agent_type_name = agent_type
+        self.signal_form = signal_form
         self.bluffing_enabled = bluffing_enabled
         self.bluffing_rate = bluffing_rate
         self.capability_dist = capability_dist
@@ -151,20 +164,14 @@ class InterstateConflictModel(Model):
                 elif agent_type == "llm":
                     if llm_provider is None:
                         raise ValueError("LLM provider required for llm agents")
+                    if mode is None:
+                        raise ValueError("mode required for llm agents")
                     agent = LLMInterstateConflictAgent(
                         self,
                         llm_provider=llm_provider,
                         true_capability=capability,
                         true_war_cost=war_cost,
-                    )
-                elif agent_type == "hybrid":
-                    if llm_provider is None:
-                        raise ValueError("LLM provider required for hybrid agents")
-                    agent = HybridInterstateConflictAgent(
-                        self,
-                        llm_provider=llm_provider,
-                        true_capability=capability,
-                        true_war_cost=war_cost,
+                        mode=mode,
                     )
                 else:
                     raise ValueError(f"Unknown agent type: {agent_type}")
@@ -328,6 +335,7 @@ class InterstateConflictModel(Model):
         for agent in self.agents:
             self._agent_history[agent.unique_id] = {
                 "last_signal_self": getattr(agent, "signal", None),
+                "last_signal_text": getattr(agent, "signal_text", None),
                 "last_payoff": float(getattr(agent, "payoff", 0.0)),
             }
 

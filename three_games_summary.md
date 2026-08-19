@@ -185,3 +185,10 @@ This round:
 
 Output: OPEN or CLOSE
 ```
+
+
+
+
+
+# International conflict game: 
+## signal / action coherent 

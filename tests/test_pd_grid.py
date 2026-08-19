@@ -39,14 +39,14 @@ class TestPDGridClassic:
 
 class TestPDGridLLM:
     def test_llm_model_creation(self):
-        provider = MockProvider(rate_limit_delay=0)
-        model = PDGridModel(width=3, height=3, agent_type="llm",
+        provider = MockProvider(game="pd", mode="reasoner", rate_limit_delay=0)
+        model = PDGridModel(width=3, height=3, agent_type="llm", mode="reasoner",
                             llm_provider=provider, seed=42)
         assert len(list(model.agents)) == 9
 
     def test_llm_step_runs(self):
-        provider = MockProvider(rate_limit_delay=0)
-        model = PDGridModel(width=3, height=3, agent_type="llm",
+        provider = MockProvider(game="pd", mode="reasoner", rate_limit_delay=0)
+        model = PDGridModel(width=3, height=3, agent_type="llm", mode="reasoner",
                             llm_provider=provider, seed=42)
         model.step()
         data = model.datacollector.get_model_vars_dataframe()
@@ -55,20 +55,3 @@ class TestPDGridLLM:
     def test_requires_provider(self):
         with pytest.raises(ValueError, match="LLM provider required"):
             PDGridModel(width=3, height=3, agent_type="llm", seed=42)
-
-
-class TestPDGridHybrid:
-    def test_hybrid_model_creation(self):
-        provider = MockProvider(rate_limit_delay=0)
-        model = PDGridModel(width=3, height=3, agent_type="hybrid",
-                            llm_provider=provider, seed=42)
-        assert len(list(model.agents)) == 9
-
-    def test_hybrid_step_runs(self):
-        provider = MockProvider(rate_limit_delay=0)
-        model = PDGridModel(width=3, height=3, agent_type="hybrid",
-                            llm_provider=provider, seed=42)
-        model.step()
-        model.step()
-        data = model.datacollector.get_model_vars_dataframe()
-        assert len(data) == 2

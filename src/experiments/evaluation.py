@@ -59,6 +59,25 @@ class BenchmarkEvaluator:
             n_runs=("seed", "count"),
         ).round(4)
 
+    # -- Interstate Conflict metrics --
+
+    def ic_war_summary(self) -> pd.DataFrame:
+        """Summarize war / bargaining outcomes by agent type."""
+        ic_runs = self.df[self.df["model"] == "interstate_conflict"]
+        if ic_runs.empty:
+            return pd.DataFrame()
+        return ic_runs.groupby("agent_type").agg(
+            mean_war_freq=("mean_war_frequency", "mean"),
+            std_war_freq=("mean_war_frequency", "std"),
+            final_war_freq=("final_war_frequency", "mean"),
+            mean_payoff=("mean_payoff", "mean"),
+            mean_welfare_loss=("mean_welfare_loss", "mean"),
+            mean_bluff_rate=("mean_bluff_rate", "mean"),
+            mean_bluff_success_rate=("mean_bluff_success_rate", "mean"),
+            mean_runtime=("runtime_seconds", "mean"),
+            n_runs=("seed", "count"),
+        ).round(4)
+
     # -- Cross-architecture comparison --
 
     def runtime_comparison(self) -> pd.DataFrame:
@@ -83,9 +102,12 @@ class BenchmarkEvaluator:
 
     # -- LLM-specific metrics --
 
+    # Arms that invoke the LLM (i.e. everything except classic).
+    _LLM_ARMS = ("calculator", "reasoner", "roleplayer")
+
     def llm_cost_summary(self) -> pd.DataFrame:
-        """Summarize LLM usage and estimated costs."""
-        llm_runs = self.df[self.df["agent_type"].isin(["llm", "hybrid"])]
+        """Summarize LLM usage and estimated costs across LLM arms."""
+        llm_runs = self.df[self.df["agent_type"].isin(self._LLM_ARMS)]
         if llm_runs.empty:
             return pd.DataFrame()
 
@@ -196,6 +218,11 @@ class BenchmarkEvaluator:
         if not cv_summary.empty:
             lines.append("\n--- Civil Violence ---")
             lines.append(cv_summary.to_string())
+
+        ic_summary = self.ic_war_summary()
+        if not ic_summary.empty:
+            lines.append("\n--- Interstate Conflict ---")
+            lines.append(ic_summary.to_string())
 
         runtime = self.runtime_comparison()
         if not runtime.empty:

@@ -41,27 +41,48 @@ class PromptCache:
         key = self._make_key(prompt, model, temperature)
         path = self._cache_path(key)
         if path.exists():
-            self._hits += 1
-            with open(path, "r") as f:
-                data = json.load(f)
-            return data["response"]
+          try:  
+              with open(path, "r") as f:
+                  data = json.load(f)
+              self._hits += 1
+              return data["response"]   
+          except (json.JSONDecodeError, KeyError, OSError) as e:    
+              print(f"[WARNING] Failed to read cache file {path}: {e}")
+              self._misses += 1
+              return None
         self._misses += 1
-        return None
+        return None  
 
-    def put(self, prompt: str, model: str, temperature: float, response: str):
+    def put(self, prompt: str, model: str, temperature: float, response: str) -> None:
         """Store a response in the cache."""
         if not self.enabled:
             return
+
         key = self._make_key(prompt, model, temperature)
         path = self._cache_path(key)
+
         data = {
             "prompt": prompt,
             "model": model,
             "temperature": temperature,
             "response": response,
         }
-        with open(path, "w") as f:
-            json.dump(data, f, indent=2)
+
+        try:
+            with open(path, "w") as f:
+                json.dump(data, f)
+        except Exception as e:
+            print(f"[WARNING] Failed to write cache file {path}: {e}")
+            return        
+
+
+
+
+
+
+
+
+
 
     @property
     def stats(self) -> dict:

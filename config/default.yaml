@@ -21,28 +21,6 @@ pd_grid:
   initial_cooperation_prob: 0.5
   neighborhood: "moore"  # "moore" or "von_neumann"
 
-# Interstate Conflict defaults
-interstate_conflict:
-  width: 20
-  height: 20
-  bluffing_enabled: true
-  bluffing_rate: 0.3
-  capability_dist: [2.0, 2.0]    # [alpha, beta] for Beta distribution
-  war_cost_dist: [2.0, 5.0]
-  capability_range: [0.1, 0.9]   # [min, max]
-  war_cost_range: [0.1, 0.5]
-
-# Jury Deliberation defaults
-jury_deliberation:
-  n_jurors: 12
-  max_rounds: 10
-  mixing_alpha: 0.3
-  classic_noise_sigma: 0.15
-  ground_truth: "GUILTY"
-  status_permutation: false
-  case_description: "[TBD: case description placeholder]"
-  testimony: "[TBD: testimony placeholder]"
-
 # Civil Violence defaults
 civil_violence:
   width: 40
@@ -54,20 +32,36 @@ civil_violence:
   legitimacy: 0.82
   max_jail_term: 30
   movement: true
+  language: "en"  # "en" or "zh" (cross-LLM language IV)
 
-# Agent architecture
+# Interstate Conflict defaults
+interstate_conflict:
+  width: 20
+  height: 20
+  signal_form: "categorical"  # "categorical" or "free_form_text" (roleplayer only)
+  bluffing_enabled: true
+  bluffing_rate: 0.3
+  capability_dist: [2.0, 2.0]    # [alpha, beta] for Beta distribution
+  war_cost_dist: [2.0, 5.0]
+  capability_range: [0.1, 0.9]   # [min, max]
+  war_cost_range: [0.1, 0.5]
+
+# Agent architecture (4-arm benchmark)
 agent:
-  type: "classic"  # "classic", "llm", "hybrid"
+  type: "classic"  # one of: "classic", "calculator", "reasoner", "roleplayer"
 
 # LLM configuration
 llm:
-  provider: "mock"  # "openai", "anthropic", "mock"
+  provider: "mock"  # "openai", "anthropic", "gemini", "deepseek", "doubao", "mock"
   model: "gpt-5.4-mini"
   temperature: 0.0
-  max_tokens: 256
+  max_tokens: 4096
   cache_enabled: true
-  cache_dir: ".llm_cache"
-  rate_limit_delay: 0.1  # seconds between API calls
+  ## cache_dir: ".llm_cache"
+  ## cache_dir: "/Users/luojing/llm_cache_local2"
+  cache_dir: "/Users/luojing/llm_cache_local"
+  rate_limit_delay: 0.02 
+  ##0.1  # seconds between API calls
 
 # Logging
 logging:

@@ -39,15 +39,15 @@ class TestInterstateConflictClassic:
 
 class TestInterstateConflictLLM:
     def test_llm_model_creation(self):
-        provider = MockProvider(rate_limit_delay=0)
+        provider = MockProvider(game="ic", mode="reasoner", rate_limit_delay=0)
         model = InterstateConflictModel(width=3, height=3, agent_type="llm",
-                                llm_provider=provider, seed=42)
+                                mode="reasoner", llm_provider=provider, seed=42)
         assert len(list(model.agents)) == 9
 
     def test_llm_step_runs(self):
-        provider = MockProvider(rate_limit_delay=0)
+        provider = MockProvider(game="ic", mode="reasoner", rate_limit_delay=0)
         model = InterstateConflictModel(width=3, height=3, agent_type="llm",
-                                llm_provider=provider, seed=42)
+                                mode="reasoner", llm_provider=provider, seed=42)
         model.step()
         data = model.datacollector.get_model_vars_dataframe()
         assert len(data) == 1
@@ -55,14 +55,3 @@ class TestInterstateConflictLLM:
     def test_requires_provider(self):
         with pytest.raises(ValueError, match="LLM provider required"):
             InterstateConflictModel(width=3, height=3, agent_type="llm", seed=42)
-
-
-class TestInterstateConflictHybrid:
-    def test_hybrid_model_creation_and_step(self):
-        provider = MockProvider(rate_limit_delay=0)
-        model = InterstateConflictModel(width=3, height=3, agent_type="hybrid",
-                                llm_provider=provider, seed=42)
-        assert len(list(model.agents)) == 9
-        model.step()
-        data = model.datacollector.get_model_vars_dataframe()
-        assert len(data) == 1

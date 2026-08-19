@@ -1,8 +1,8 @@
 """Epstein Civil Violence Model.
 
 Citizens with heterogeneous grievances decide whether to rebel.
-Cops patrol and arrest active rebels. Supports classic, LLM,
-and hybrid citizen architectures.
+Cops patrol and arrest active rebels. Supports classic and LLM
+citizen architectures.
 
 Based on Epstein (2002) "Modeling Civil Violence".
 """
@@ -17,7 +17,6 @@ from mesa.datacollection import DataCollector
 from src.agents.classic_cv import ClassicCitizenAgent, ClassicCopAgent
 from src.agents.classic_cv import QUIET, ACTIVE, JAILED
 from src.agents.llm_cv import LLMCitizenAgent
-from src.agents.hybrid_cv import HybridCitizenAgent
 from src.llm.provider import LLMProvider
 from src.utils.logging import ExperimentLogger
 
@@ -60,6 +59,8 @@ class CivilViolenceModel(Model):
                  max_jail_term: int = 30,
                  movement: bool = True,
                  agent_type: str = "classic",
+                 mode: Optional[str] = None,
+                 language: str = "en",
                  llm_provider: Optional[LLMProvider] = None,
                  logger: Optional[ExperimentLogger] = None,
                  seed: Optional[int] = None):
@@ -71,6 +72,7 @@ class CivilViolenceModel(Model):
         self.max_jail_term = max_jail_term
         self.movement = movement
         self.agent_type_name = agent_type
+        self.language = language
         self.logger = logger
         self.schedule_step = 0
         self._arrests_this_step = 0
@@ -102,18 +104,11 @@ class CivilViolenceModel(Model):
             elif agent_type == "llm":
                 if llm_provider is None:
                     raise ValueError("LLM provider required for llm agents")
+                if mode is None:
+                    raise ValueError("mode required for llm agents")
                 agent = LLMCitizenAgent(
                     self, llm_provider=llm_provider,
-                    hardship=hardship,
-                    regime_legitimacy=legitimacy,
-                    risk_aversion=risk_aversion,
-                    vision=citizen_vision,
-                )
-            elif agent_type == "hybrid":
-                if llm_provider is None:
-                    raise ValueError("LLM provider required for hybrid agents")
-                agent = HybridCitizenAgent(
-                    self, llm_provider=llm_provider,
+                    mode=mode,
                     hardship=hardship,
                     regime_legitimacy=legitimacy,
                     risk_aversion=risk_aversion,

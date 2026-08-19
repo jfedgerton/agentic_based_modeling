@@ -39,7 +39,7 @@ class TestCivilViolenceClassic:
 class TestCivilViolenceLLM:
     def test_llm_model_runs(self):
         import json
-        provider = MockProvider(rate_limit_delay=0)
+        provider = MockProvider(game="cv", mode="reasoner", rate_limit_delay=0)
         # Set up mock responses for civil violence
         provider.set_response("citizen", json.dumps({
             "observed_state_summary": "Mock citizen observation",
@@ -51,7 +51,7 @@ class TestCivilViolenceLLM:
         }))
         model = CivilViolenceModel(
             width=5, height=5, citizen_density=0.5,
-            cop_density=0.04, agent_type="llm",
+            cop_density=0.04, agent_type="llm", mode="reasoner",
             llm_provider=provider, seed=42,
         )
         model.step()
@@ -61,8 +61,10 @@ class TestCivilViolenceLLM:
         import json
         from src.agents.classic_cv import ClassicCopAgent, JAILED
 
-        provider = MockProvider(rate_limit_delay=0)
-        provider.set_response("citizen", json.dumps({
+        provider = MockProvider(game="cv", mode="reasoner", rate_limit_delay=0)
+        # Override default to force ACTIVE so we can test that cops arrest them.
+        # The substring must appear in the CV Reasoner prompt body.
+        provider.set_response("Choosing ACTIVE", json.dumps({
             "observed_state_summary": "Mock citizen observation",
             "beliefs": {"expected_neighbor_behavior": "active",
                         "risk_assessment": "low"},
@@ -74,7 +76,8 @@ class TestCivilViolenceLLM:
         model = CivilViolenceModel(
             width=5, height=5, citizen_density=0.3, cop_density=0.3,
             citizen_vision=7, cop_vision=7, movement=False,
-            agent_type="llm", llm_provider=provider, seed=42,
+            agent_type="llm", mode="reasoner",
+            llm_provider=provider, seed=42,
         )
 
         model.step()

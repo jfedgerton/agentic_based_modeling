@@ -1,8 +1,8 @@
 """Prisoner's Dilemma Grid Model.
 
 A spatial iterated Prisoner's Dilemma on a 2D grid where agents play
-against all Moore neighbors simultaneously. Supports classic, LLM,
-and hybrid agent architectures.
+against all Moore neighbors simultaneously. Supports classic and LLM
+agent architectures.
 
 Based on the canonical ABM benchmark (Nowak & May 1992).
 """
@@ -17,7 +17,6 @@ from mesa.datacollection import DataCollector
 
 from src.agents.classic_pd import ClassicPDAgent
 from src.agents.llm_pd import LLMPDAgent
-from src.agents.hybrid_pd import HybridPDAgent
 from src.llm.provider import LLMProvider
 from src.utils.logging import ExperimentLogger
 
@@ -67,6 +66,7 @@ class PDGridModel(Model):
 
     def __init__(self, width: int = 20, height: int = 20,
                  agent_type: str = "classic",
+                 mode: Optional[str] = None,
                  initial_cooperation_prob: float = 0.5,
                  payoff_matrix: Optional[dict] = None,
                  llm_provider: Optional[LLMProvider] = None,
@@ -99,13 +99,11 @@ class PDGridModel(Model):
                 elif agent_type == "llm":
                     if llm_provider is None:
                         raise ValueError("LLM provider required for llm agents")
+                    if mode is None:
+                        raise ValueError("mode required for llm agents")
                     agent = LLMPDAgent(self, llm_provider=llm_provider,
+                                       mode=mode,
                                        initial_action=initial_action)
-                elif agent_type == "hybrid":
-                    if llm_provider is None:
-                        raise ValueError("LLM provider required for hybrid agents")
-                    agent = HybridPDAgent(self, llm_provider=llm_provider,
-                                          initial_action=initial_action)
                 else:
                     raise ValueError(f"Unknown agent type: {agent_type}")
 

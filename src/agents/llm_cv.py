@@ -1,63 +1,68 @@
 """LLM-based citizen agent for the Epstein Civil Violence model.
 
-Uses an LLM to decide whether to remain QUIET or become ACTIVE,
-based on the same local information available to the classic agent.
+Supports three input modes — Calculator, Reasoner, Role-player — whose
+prompt templates live in :mod:`src.prompts.cv_prompts`. The LLM emits
+different surface action labels per mode (``A``/``B`` for Calculator,
+``QUIET``/``ACTIVE`` for Reasoner, ``STAY_HOME``/``JOIN_PROTEST`` for
+Role-player); this agent translates them into the canonical ``QUIET`` /
+``ACTIVE`` state used by the simulator.
+
+The prompt language (``en`` / ``zh``) is read from the model
+(:attr:`CivilViolenceModel.language`), since it is a run-level IV shared
+by all agents in a simulation.
 """
 
 import json
-from typing import Optional
+import math
+from typing import Literal, Optional
 
 from src.agents.base import AgentDecision, BaseAgent, parse_llm_response
-from src.agents.classic_cv import ClassicCitizenAgent, QUIET, ACTIVE, JAILED
+from src.agents.classic_cv import ClassicCopAgent, QUIET, ACTIVE, JAILED
 from src.llm.provider import LLMProvider
+from src.prompts import get_prompt
 
-VALID_ACTIONS = [QUIET, ACTIVE]
+Mode = Literal["calculator", "reasoner", "roleplayer"]
 
-CV_SYSTEM_PROMPT = """You are a citizen in a society with a political regime.
-You have a level of hardship and perceive the regime's legitimacy.
-Each round, you decide whether to remain QUIET or become ACTIVE (rebel).
+# Surface labels the LLM is asked to output for each mode.
+_SURFACE_LABELS: dict[str, list[str]] = {
+    "calculator": ["A", "B"],
+    "reasoner": [QUIET, ACTIVE],
+    "roleplayer": ["STAY_HOME", "JOIN_PROTEST"],
+}
 
-If you rebel (ACTIVE), you may be arrested by nearby cops and jailed.
-Your decision factors:
-- Grievance = hardship * (1 - regime_legitimacy)
-- Risk = estimated probability of arrest if you rebel
-- More cops nearby = higher arrest risk
-- More active rebels nearby = lower individual arrest risk (safety in numbers)
+# Surface (LLM output) → canonical (simulator state).
+_SURFACE_TO_CANONICAL: dict[str, dict[str, str]] = {
+    "calculator": {"A": QUIET, "B": ACTIVE},
+    "reasoner": {QUIET: QUIET, ACTIVE: ACTIVE},
+    "roleplayer": {"STAY_HOME": QUIET, "JOIN_PROTEST": ACTIVE},
+}
 
-You must respond with ONLY a JSON object:
-{{
-  "observed_state_summary": "<what you observe>",
-  "beliefs": {{
-    "expected_neighbor_behavior": "<expectation>",
-    "risk_assessment": "<low/medium/high>"
-  }},
-  "action": "QUIET" or "ACTIVE",
-  "confidence": <0.0 to 1.0>,
-  "short_rationale": "<1-3 sentence explanation>"
-}}"""
-
-CV_DECISION_PROMPT = """Your current situation:
-- Your hardship level: {hardship:.2f} (0=none, 1=extreme)
-- Regime legitimacy: {legitimacy:.2f} (0=illegitimate, 1=fully legitimate)
-- Your grievance: {grievance:.2f}
-- Your risk aversion: {risk_aversion:.2f}
-- Cops visible nearby: {cops_nearby}
-- Active rebels nearby: {actives_nearby}
-- Quiet citizens nearby: {quiets_nearby}
-- Estimated arrest probability: {arrest_prob:.2f}
-- Your current state: {state}
-
-Choose your action for this round."""
+# How to render the agent's current state in the prompt, per mode.
+# Includes JAILED since the simulator may show it during the no-op jail step.
+_STATE_RENDER: dict[str, dict[str, str]] = {
+    "calculator": {QUIET: "0", ACTIVE: "1", JAILED: "2"},
+    "reasoner": {QUIET: "QUIET", ACTIVE: "ACTIVE", JAILED: "JAILED"},
+    "roleplayer": {QUIET: "STAY_HOME", ACTIVE: "PROTESTING", JAILED: "DETAINED"},
+}
 
 
 class LLMCitizenAgent(BaseAgent):
-    """LLM-driven citizen in the Civil Violence model."""
+    """LLM-driven citizen in the Civil Violence model.
 
-    def __init__(self, model, llm_provider: LLMProvider,
+    On LLM parse failure, falls back to the classical Epstein rule
+    (``rebel if grievance − risk_aversion × arrest_prob > threshold``).
+    """
+
+    def __init__(self, model, llm_provider: LLMProvider, mode: Mode,
                  hardship: float, regime_legitimacy: float,
                  risk_aversion: float, threshold: float = 0.1,
                  vision: int = 7):
         super().__init__(model, agent_type="llm_citizen")
+        if mode not in _SURFACE_LABELS:
+            raise ValueError(
+                f"unknown mode: {mode!r}. Expected one of {list(_SURFACE_LABELS)}"
+            )
+        self.mode = mode
         self.llm = llm_provider
         self.hardship = hardship
         self.regime_legitimacy = regime_legitimacy
@@ -72,16 +77,14 @@ class LLMCitizenAgent(BaseAgent):
         return self.hardship * (1.0 - self.regime_legitimacy)
 
     def _estimated_arrest_prob(self) -> float:
-        import math
         neighbors = self.model.grid.get_neighbors(
             self.pos, moore=True, radius=self.vision)
-        from src.agents.classic_cv import ClassicCopAgent
         cops_nearby = sum(1 for n in neighbors
-                         if isinstance(n, (ClassicCopAgent,))
-                         or getattr(n, 'agent_type', '') == 'classic_cop')
+                          if isinstance(n, ClassicCopAgent)
+                          or getattr(n, "agent_type", "") == "classic_cop")
         actives_nearby = sum(
             1 for n in neighbors
-            if hasattr(n, 'state') and n.state == ACTIVE
+            if hasattr(n, "state") and n.state == ACTIVE
         )
         actives_nearby_plus = 1 + actives_nearby
         if cops_nearby == 0:
@@ -91,14 +94,13 @@ class LLMCitizenAgent(BaseAgent):
     def get_local_observation(self) -> dict:
         neighbors = self.model.grid.get_neighbors(
             self.pos, moore=True, radius=self.vision)
-        from src.agents.classic_cv import ClassicCopAgent
         cops = sum(1 for n in neighbors
-                   if isinstance(n, (ClassicCopAgent,))
-                   or getattr(n, 'agent_type', '') == 'classic_cop')
+                   if isinstance(n, ClassicCopAgent)
+                   or getattr(n, "agent_type", "") == "classic_cop")
         actives = sum(1 for n in neighbors
-                      if hasattr(n, 'state') and n.state == ACTIVE)
+                      if hasattr(n, "state") and n.state == ACTIVE)
         quiets = sum(1 for n in neighbors
-                     if hasattr(n, 'state') and n.state == QUIET)
+                     if hasattr(n, "state") and n.state == QUIET)
         return {
             "grievance": self.grievance,
             "hardship": self.hardship,
@@ -108,9 +110,20 @@ class LLMCitizenAgent(BaseAgent):
             "actives_nearby": actives,
             "quiets_nearby": quiets,
             "arrest_prob": self._estimated_arrest_prob(),
-            "state": self.state,
+            "state": self.state,  # canonical; rendered per-mode in _build_prompt
+            "max_jail_term": self.model.max_jail_term,
             "jail_term": self.jail_term,
+            "vision": self.vision,
+            "vision_diameter": 2 * self.vision + 1,
+            "observable_cells": (2 * self.vision + 1) ** 2 - 1,
         }
+
+    def _build_prompt(self, obs: dict) -> str:
+        # Render state as the surface label for this mode.
+        rendered_obs = dict(obs)
+        rendered_obs["state"] = _STATE_RENDER[self.mode][self.state]
+        template = get_prompt("cv", self.mode, language=self.model.language)
+        return template.format(**rendered_obs)
 
     def step(self):
         """LLM-driven citizen decision and movement."""
@@ -121,13 +134,14 @@ class LLMCitizenAgent(BaseAgent):
             return
 
         obs = self.get_local_observation()
-        prompt = f"{CV_SYSTEM_PROMPT}\n\n{CV_DECISION_PROMPT.format(**obs)}"
-
+        prompt = self._build_prompt(obs)
         raw_response = self.llm.query(prompt)
 
         try:
-            decision = parse_llm_response(raw_response, VALID_ACTIONS)
-            self.state = decision.action
+            decision = parse_llm_response(raw_response, _SURFACE_LABELS[self.mode])
+            canonical = _SURFACE_TO_CANONICAL[self.mode][decision.action]
+            decision.action = canonical
+            self.state = canonical
         except (ValueError, json.JSONDecodeError) as e:
             if hasattr(self.model, "logger") and self.model.logger:
                 self.model.logger.log_parse_failure(
@@ -136,14 +150,13 @@ class LLMCitizenAgent(BaseAgent):
                     raw_response=raw_response,
                     error=str(e),
                 )
-            # Fallback: use classical rule
+            # Fallback: classical Epstein rule
             arrest_prob = self._estimated_arrest_prob()
             net_risk = self.risk_aversion * arrest_prob
             if self.grievance - net_risk > self.threshold:
                 self.state = ACTIVE
             else:
                 self.state = QUIET
-
             decision = AgentDecision(
                 observed_state_summary="Parse failure, using classical fallback.",
                 beliefs={},

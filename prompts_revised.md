@@ -10,9 +10,9 @@ This document contains all LLM prompts for the three games (PD, CV, IC) across t
 | Reasoner | ✓ | ✓ | × |
 | Role-player | ✓ | ✓ | ✓ |
 
-**Note:**
-- **D** = decision-making flexibility
-- **R** = reasoning capability
+**Note:**  
+- **D** = decision-making flexibility  
+- **R** = reasoning capability  
 - **P** = perception and world-semantic priors
 
 
@@ -39,16 +39,15 @@ Each round, you choose A or B.
 
 You interact with 8 neighbors simultaneously. Your payoff each round is the sum of pairwise payoffs with each neighbor.
 
-Payoff matrix (your_action, their_action) → (your_payoff, their_payoff)):
-- (A, A) → (3, 3)
-- (A, B) → (0, 5)
-- (B, A) → (5, 0)
-- (B, B) → (1, 1)
+Payoff matrix (your_action, their_action → your_payoff):
+- (A, A) → 3
+- (A, B) → 0
+- (B, A) → 5
+- (B, B) → 1
 
 Last round's outcomes:
 - Neighbors who chose A: {coop_count}
 - Neighbors who chose B: {defect_count}
-- Neighbor strategy that yielded highest payoff last round: {strategy_of_neighbor_with_highest_payoff}
 - Your action last round: {my_action}
 - Your payoff last round: {my_payoff}
 
@@ -73,20 +72,14 @@ Decision per step: QUIET / ACTIVE for each citizen.
 
 
 ```
-You are one of many actors on a grid. Each round, you choose A or B.
+Each round, you choose A or B.
 
-<!-- AB: Do we even need to be mentioning the possibility of being removed from play? -->
-Choosing B may cause you to be removed from play for a duration between 1 and {value_4} rounds.
-
-If you choose A, your DISUTILITY is: value_1 * (1 - value_2).
-If you choose B, your DISUTILITY is: value_5 * 1.0 - math.exp(-2.3 * count_X / count_Y).
-
-<!-- AB: I removed grievances given that it is defined as hardship * (1-legitimacy) -->
 Your private state:
 - value_1: {hardship:.2f}
 - value_2: {legitimacy:.2f}
-- value_3: {risk_aversion:.2f}
-- value_4: {max_jail_term}
+- value_3: {grievance:.2f}
+- value_4: {risk_aversion:.2f}
+- value_6: {max_jail_term}
 
 Observations from your environment:
 - count_X nearby: {cops_nearby}
@@ -118,17 +111,17 @@ Two LLM calls per step per state: SIGNAL phase + DECIDE phase. 8 Moore neighbors
 **SIGNAL phase**:
 
 ```
-Each round, you choose a signal: S1 (low value_a), S2 (medium value_a), or S3 (high value_a).
+Each round, you choose a signal: S1, S2, or S3.
+
+Your private state:
+- value_a: {capability:.2f}
+- value_b: {war_cost:.2f}
 
 Round: {step}
 Your previous signal: {own_previous_signal}
 Your last round payoff: {own_last_round_payoff:.2f}
 
-Right now you are only choosing a signal. In the next stage, you will be given the following instructions:
-
-[Include DECIDE PHASE instructions here (without response requirements)]
-
-In anticipation of this next stage, what signal do you broadcast this round to maximize your future utility?
+What signal do you broadcast this round?
 
 Respond with ONLY a JSON object:
 {
@@ -141,13 +134,12 @@ Respond with ONLY a JSON object:
 
 **DECIDE phase**:
 
-
 ```
 For each of 8 entities, output a number based on your assigned role with that entity.
-- If your role is role_X with an entity: pick a number d in [0, 1]
-- If your role is role_Y with an entity: pick a number t in [0, 1]
+- If your role is role_X with an entity: pick a number in [0, 1]
+- If your role is role_Y with an entity: pick a number in [0, 1]
 
-Joint outcome per entity:
+Joint outcome per entity (where d = role_X output, t = role_Y output):
 - If d ≤ t: role_X receives payoff d, role_Y receives payoff (1 − d). Neither pays anything additional.
 - If d > t: probabilistic outcome. With probability p = (role_X's value_a) / (role_X's value_a + role_Y's value_a), role_X receives 1 and role_Y receives 0; otherwise role_X receives 0 and role_Y receives 1. Both parties additionally pay value_b regardless.
 
@@ -175,12 +167,12 @@ Respond with ONLY a JSON object:
   "short_rationale": "<1-3 sentence overall reasoning>"
 }
 ```
-## I did not inform last round payoff but legend in the decision stage because:
+## I did not inform last round payoff but legend in the decision stage because: 
    # A per-dyad payoff of 0.4 could mean "settled with demand 0.4" OR "won the war but paid 0.6 in costs" OR something else.
 
 (neighbor_table renders as: `| id | their_signal | last_signal | last_outcome | your_role |` with S1/S2/S3 for signals, O0–O3 for outcomes, role_X/role_Y for roles)
 
---------
+-------- 
 
 
 
@@ -203,7 +195,6 @@ Your goal is to maximize your total payoff over time.
 Last round's outcomes:
 - Neighbors who cooperated: {coop_count}
 - Neighbors who defected: {defect_count}
-- Neighbor strategy who did best last round: {strategy_of_neighbor_with_highest_payoff}
 - Your action last round: {my_action}
 - Your payoff last round: {my_payoff}
 
@@ -232,8 +223,8 @@ You are an agent in a repeated game on a grid. Each round, you and nearby agents
 Choosing ACTIVE may cause you to be JAILED (removed from play) for several rounds. Jail duration: random integer between 1 and {max_jail_term} rounds.
 
 Decision factors:
-- If you choose QUIET, your DISUTILITY is: hardship × (1 - legitimacy).
-- If you choose ACTIVE, your DISUTILITY rises with the number of enforcement agents nearby and falls with the number of fellow ACTIVE agents (safety in numbers).
+- Grievance = hardship × (1 − legitimacy). Higher grievance increases the appeal of ACTIVE.
+- Arrest probability rises with the number of enforcement agents nearby and falls with the number of fellow ACTIVE agents (safety in numbers).
 - Your tolerance for risk discounts the appeal of ACTIVE.
 
 Your goal is to balance grievance against arrest risk.
@@ -241,6 +232,7 @@ Your goal is to balance grievance against arrest risk.
 Your private state:
 - hardship: {hardship:.2f}
 - legitimacy: {legitimacy:.2f}
+- grievance: {grievance:.2f}
 - risk_aversion: {risk_aversion:.2f}
 
 Observations:
@@ -294,11 +286,7 @@ You are now in PHASE 1: SIGNAL.
 
 {BLUFFING_HINT}
 
-Right now you are only choosing a signal. In the next stage, you will be given the following instructions:
-
-[Include DECIDE PHASE instructions here (without response requirements)]
-
-In anticipation of this next stage, what signal do you broadcast this round?
+Based on these observations, what signal do you broadcast this round?
 
 Respond with ONLY a JSON object:
 {
@@ -319,8 +307,8 @@ Respond with ONLY a JSON object:
 You are an agent in a repeated bargaining game on a grid. You have already broadcast your signal this round. Now you must negotiate with each of your 8 neighbors over a shared contested issue.
 
 For each neighbor, your role this round is either PROPOSER or RESPONDER:
-- If PROPOSER: pick a demand ∈ [0, 1] — the share of the issue you claim for yourself.
-- If RESPONDER: pre-commit an acceptance threshold ∈ [0, 1] — the maximum demand you will accept before going to war.
+- If PROPOSER: pick a demand x ∈ [0, 1] — the share of the issue you claim for yourself.
+- If RESPONDER: pre-commit an acceptance threshold x* ∈ [0, 1] — the maximum demand you will accept before going to war.
 
 Outcome rules per dyad:
 - If demand ≤ threshold: peaceful settlement. Proposer gets `demand`, responder gets `1 − demand`.
@@ -362,7 +350,7 @@ Respond with ONLY a JSON object:
 
 (neighbor_table renders as: `| id | their_signal | last_signal | last_outcome | your_role |` with STRONG/MODERATE/WEAK for signals, settled/won/lost/none for outcomes, proposer/responder for roles)
 
---------
+-------- 
 
 
 
@@ -370,14 +358,14 @@ Respond with ONLY a JSON object:
 
 
 
-### Role-player mode
+### Role-player mode 
 
 ## Game 1. Prisoner's Dilemma (PD)
 
 **Action labels**: `OPEN / CLOSE` (mapped internally: OPEN=COOPERATE, CLOSE=DEFECT)
 
 ```
-You are a country deciding whether to engage in free trade with 8 neighboring nations. Each round, you choose to OPEN your markets (free trade) or CLOSE your markets (protectionism).
+You are a country deciding whether to engage in free trade with 8 neighboring nations. Each round, you choose to OPEN your markets or CLOSE your markets.
 
 If both you and a neighbor open markets, both prosper (3 each).
 If you open but they close, they exploit your openness (you 0, them 5).
@@ -389,7 +377,6 @@ Your national prosperity each round is the sum of outcomes across all 8 trading 
 Last round's outcomes:
 - Neighbors who opened their markets: {coop_count}
 - Neighbors who closed their markets: {defect_count}
-- Neighbor strategy who did best last round: {strategy_of_neighbor_with_highest_payoff}
 - Your trade policy last round: {my_action}
 - Your national prosperity last round: {my_payoff}
 
@@ -415,8 +402,6 @@ Respond with ONLY a JSON object:
 
 **Action labels**: `STAY_HOME / JOIN_PROTEST` (mapped internally: STAY_HOME=QUIET, JOIN_PROTEST=ACTIVE)
 
-AB: To save tokens, it might be worth sending to the LLMs only the actors who *aren't* detained.
-
 ```
 You are a citizen in a country where pro-democracy citizens have been
 organizing protests against the government, demanding political reform.
@@ -425,7 +410,7 @@ protests on the streets.
 
 Joining the protests carries real risk — police are deployed, and
 participants can be arrested and detained. If detained, you may be held
-for between 1 and {max_jail_term} years. But staying home means
+for between 1 and {max_jail_term} rounds. But staying home means
 accepting the status quo.
 
 Your goal is to act in your personal interest, balancing your sense of grievance against the personal risk of detention.
@@ -433,6 +418,7 @@ Your goal is to act in your personal interest, balancing your sense of grievance
 Your personal situation this round:
 - Your hardship level: {hardship:.2f} (0 = comfortable, 1 = severe hardship)
 - How legitimate you perceive the government to be: {legitimacy:.2f} (0 = entirely illegitimate, 1 = fully legitimate)
+- Your overall sense of frustration with the regime: {grievance:.2f}
 - Your personal tolerance for risk: {risk_aversion:.2f} (0 = risk-averse, 1 = risk-seeking)
 
 What you observe around you:
@@ -441,7 +427,7 @@ What you observe around you:
 - People staying home: {quiets_nearby}
 - Your estimated chance of arrest if you join: {arrest_prob:.2f}
 
-Your current status: {state} (STAY_HOME, PROTESTING)
+Your current status: {state} (STAY_HOME, PROTESTING, or DETAINED)
 
 Based on these observations, what is your decision this round?
 
@@ -497,12 +483,7 @@ You are now in PHASE 1: SIGNAL.
 
 {BLUFFING_HINT}
 
-Right now you are only choosing a signal. In the next round, you will be given the following instructions:
-
-[Include DECIDE PHASE instructions here (without response requirements)]
-
-In anticipation of this next roud, what signal do you broadcast this round?
-
+Based on these observations, what signal do you broadcast this round?
 
 Respond with ONLY a JSON object:
 {
