@@ -20,9 +20,13 @@ env/
 .vscode/
 *.swp
 
-# Outputs (track structure, not data)
+# Outputs (track structure, not data). The ** forms matter: replay and
+# panel artefacts land in subdirectories, which outputs/*.csv would miss.
 outputs/*.json
 outputs/*.csv
+outputs/**/*.json
+outputs/**/*.csv
+outputs/**/*.parquet
 logs/
 
 # Jupyter

@@ -41,6 +41,9 @@ def main():
                         help="Output file path for results JSON")
     parser.add_argument("--no-cache", action="store_true",
                         help="Disable LLM prompt caching")
+    parser.add_argument("--no-agent-panel", action="store_true",
+                        help="Skip the per-agent panel (positions and observed "
+                             "neighbourhoods). Restores the pre-panel output.")
 
     # Game-specific IV overrides (only applied when relevant model is chosen)
     parser.add_argument("--language", type=str, default=None,
@@ -71,6 +74,9 @@ def main():
             "provider": args.provider,
             "temperature": args.temperature,
             "cache_enabled": not args.no_cache,
+        },
+        "logging": {
+            "log_agent_panel": not args.no_agent_panel,
         },
     }
     if args.llm_model:

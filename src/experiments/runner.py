@@ -22,6 +22,7 @@ from src.llm.provider import get_provider, LLMProvider
 from src.models.pd_grid import PDGridModel
 from src.models.civil_violence import CivilViolenceModel
 from src.models.interstate_conflict import InterstateConflictModel
+from src.utils.agent_panel import close_panel_writers, make_panel_writers
 from src.utils.config import load_config
 from src.utils.logging import ExperimentLogger
 
@@ -88,6 +89,25 @@ class ExperimentRunner:
             provider_kwargs.update(game=game, mode=mode, signal_form=signal_form)
         return get_provider(provider_name, **provider_kwargs)
 
+    def _panel_writers(self, game: str, log_dir) -> dict:
+        """Panel writers for this run, or {} when panel logging is off.
+
+        Panels land beside the run's other logs so a run directory stays
+        self-contained.
+        """
+        enabled = self.config.get("logging", {}).get("log_agent_panel", True)
+        return make_panel_writers(game, log_dir, enabled=enabled)
+
+    @staticmethod
+    def _finalize_panels(writers: dict, result: dict) -> None:
+        """Close panel writers and record their row counts in the result."""
+        summaries = close_panel_writers(writers)
+        if summaries:
+            result["panel_stats"] = {
+                arg: {"rows": s["rows"], "path": s["path"]}
+                for arg, s in summaries.items()
+            }
+
     # ------------------------------------------------------------- PD
 
     def run_pd_grid(self, seed: int, num_steps: Optional[int] = None) -> dict:
@@ -104,6 +124,7 @@ class ExperimentRunner:
 
         llm_provider = self._setup_llm(game="pd")
         pd_config = self.config["pd_grid"]
+        panels = self._panel_writers("pd", logger.log_dir)
 
         model = PDGridModel(
             width=pd_config["width"],
@@ -115,6 +136,7 @@ class ExperimentRunner:
             llm_provider=llm_provider,
             logger=logger,
             seed=seed,
+            **panels,
         )
 
         start_time = time.time()
@@ -143,6 +165,7 @@ class ExperimentRunner:
             if llm_provider.cache:
                 result["cache_stats"] = llm_provider.cache.stats
 
+        self._finalize_panels(panels, result)
         logger.finalize(llm_stats=llm_stats)
         result["log_dir"] = str(logger.log_dir)
         model_data.to_csv(logger.log_dir / "time_series.csv")
@@ -170,6 +193,7 @@ class ExperimentRunner:
         language = cv_config.get("language", "en")
 
         llm_provider = self._setup_llm(game="cv")
+        panels = self._panel_writers("cv", logger.log_dir)
 
         model = CivilViolenceModel(
             width=cv_config["width"],
@@ -187,6 +211,7 @@ class ExperimentRunner:
             llm_provider=llm_provider,
             logger=logger,
             seed=seed,
+            **panels,
         )
 
         start_time = time.time()
@@ -215,6 +240,7 @@ class ExperimentRunner:
             if llm_provider.cache:
                 result["cache_stats"] = llm_provider.cache.stats
 
+        self._finalize_panels(panels, result)
         logger.finalize(llm_stats=llm_stats)
         result["log_dir"] = str(logger.log_dir)
         model_data.to_csv(logger.log_dir / "time_series.csv")
@@ -241,6 +267,7 @@ class ExperimentRunner:
         signal_form = ic_config.get("signal_form", "categorical")
 
         llm_provider = self._setup_llm(game="ic", signal_form=signal_form)
+        panels = self._panel_writers("ic", logger.log_dir)
 
         model = InterstateConflictModel(
             width=ic_config["width"],
@@ -257,6 +284,7 @@ class ExperimentRunner:
             llm_provider=llm_provider,
             logger=logger,
             seed=seed,
+            **panels,
         )
 
         start_time = time.time()
@@ -289,6 +317,7 @@ class ExperimentRunner:
             if llm_provider.cache:
                 result["cache_stats"] = llm_provider.cache.stats
 
+        self._finalize_panels(panels, result)
         logger.finalize(llm_stats=llm_stats)
         result["log_dir"] = str(logger.log_dir)
         model_data.to_csv(logger.log_dir / "time_series.csv")

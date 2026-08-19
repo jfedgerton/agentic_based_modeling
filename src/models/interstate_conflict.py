@@ -19,6 +19,9 @@ from mesa.datacollection import DataCollector
 from src.agents.classic_interstate_conflict import ClassicInterstateConflictAgent
 from src.agents.llm_interstate_conflict import LLMInterstateConflictAgent
 from src.llm.provider import LLMProvider
+from src.utils.agent_panel import (
+    AgentPanelWriter, disabled_writer, flatten_dyad_outcome,
+)
 from src.utils.logging import ExperimentLogger
 
 
@@ -96,6 +99,7 @@ class InterstateConflictModel(Model):
                  war_cost_range: Tuple[float, float] = (0.1, 0.5),
                  llm_provider: Optional[LLMProvider] = None,
                  logger: Optional[ExperimentLogger] = None,
+                 dyad_writer: Optional[AgentPanelWriter] = None,
                  seed: Optional[int] = None):
         super().__init__(seed=seed)
 
@@ -122,6 +126,11 @@ class InterstateConflictModel(Model):
         self.war_cost_range = war_cost_range
         self.logger = logger
         self.schedule_step = 0
+
+        # Dyad outcomes already carry both positions and both signals; the
+        # writer just gives them a columnar home instead of being nested
+        # inside records.jsonl.
+        self.dyads = dyad_writer or disabled_writer()
 
         # Step-level counters; reset at the start of each step().
         self._dyads_this_step = 0
@@ -330,6 +339,7 @@ class InterstateConflictModel(Model):
                 self._dyads_this_step += 1
                 outcome = self._resolve_dyad(agent, neighbor)
                 self._dyad_outcomes_this_step.append(outcome)
+                self.dyads.append(flatten_dyad_outcome(outcome))
 
         # Record per-agent 1-round history (signal + total payoff this round).
         for agent in self.agents:

@@ -8,6 +8,7 @@ anthropic>=0.20.0
 # Data and analysis
 numpy>=1.24.0
 pandas>=1.5.0
+pyarrow>=12.0.0  # agent panel output
 matplotlib>=3.7.0
 seaborn>=0.12.0
 scipy>=1.10.0

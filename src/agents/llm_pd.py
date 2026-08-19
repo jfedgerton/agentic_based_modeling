@@ -12,6 +12,7 @@ import json
 from typing import Literal, Optional
 
 from src.agents.base import AgentDecision, BaseAgent, parse_llm_response
+from src.agents.classic_pd import pd_panel_row
 from src.llm.provider import LLMProvider
 from src.prompts import get_prompt
 
@@ -104,10 +105,12 @@ class LLMPDAgent(BaseAgent):
 
     def decide(self):
         """Query the LLM for a decision."""
+        action_before = self.action
         obs = self.get_local_observation()
         prompt = self._build_prompt(obs)
 
         raw_response = self.llm.query(prompt)
+        parse_failed = False
 
         try:
             decision = parse_llm_response(raw_response, _SURFACE_LABELS[self.mode])
@@ -117,6 +120,7 @@ class LLMPDAgent(BaseAgent):
             decision.action = canonical
             self.next_action = canonical
         except (ValueError, json.JSONDecodeError) as e:
+            parse_failed = True
             if hasattr(self.model, "logger") and self.model.logger:
                 self.model.logger.log_parse_failure(
                     step=self.model.schedule_step if hasattr(self.model, "schedule_step") else -1,
@@ -143,6 +147,15 @@ class LLMPDAgent(BaseAgent):
             )
 
         self.record_decision(decision)
+
+        panel = getattr(self.model, "panel", None)
+        if panel is not None and panel.enabled:
+            panel.append(pd_panel_row(
+                self, obs, action_before,
+                best_neighbor_action=obs.get(
+                    "strategy_of_neighbor_with_highest_payoff"),
+                confidence=decision.confidence, parse_failed=parse_failed,
+            ))
 
     def advance(self):
         """Apply the decided action."""

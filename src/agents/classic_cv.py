@@ -17,6 +17,39 @@ ACTIVE = "ACTIVE"
 JAILED = "JAILED"
 
 
+def cv_panel_row(agent, obs: dict, state_before: str, pos_before: tuple,
+                 confidence: float = 1.0, parse_failed: bool = False) -> dict:
+    """Build one panel row for a citizen that has just finished a step.
+
+    Shared by the classic and LLM citizens so both architectures produce the
+    same schema. ``pos_before`` is where the agent stood when it decided;
+    ``agent.pos`` is where it ended up, since movement happens afterwards.
+    """
+    return {
+        "step": agent.model.schedule_step,
+        "activation_idx": getattr(agent, "activation_idx", -1),
+        "agent_id": agent.unique_id,
+        "agent_type": agent.agent_type,
+        "x": pos_before[0],
+        "y": pos_before[1],
+        "state_before": state_before,
+        "action": agent.state,
+        "moved_to_x": agent.pos[0] if agent.pos else None,
+        "moved_to_y": agent.pos[1] if agent.pos else None,
+        "hardship": agent.hardship,
+        "risk_aversion": agent.risk_aversion,
+        "legitimacy": agent.regime_legitimacy,
+        "grievance": agent.grievance,
+        "cops_nearby": obs["cops_nearby"],
+        "actives_nearby": obs["actives_nearby"],
+        "quiets_nearby": obs["quiets_nearby"],
+        "arrest_prob": obs["arrest_prob"],
+        "jail_term": agent.jail_term,
+        "confidence": confidence,
+        "parse_failed": parse_failed,
+    }
+
+
 class ClassicCitizenAgent(BaseAgent):
     """Rule-based citizen in the Civil Violence model."""
 
@@ -84,8 +117,18 @@ class ClassicCitizenAgent(BaseAgent):
                 self.state = QUIET
             return
 
-        # Compute net risk
-        arrest_prob = self._estimated_arrest_prob()
+        # Panel rows need the state and position as they were when the
+        # decision was taken — the agent moves at the end of this method.
+        panel = getattr(self.model, "panel", None)
+        recording = panel is not None and panel.enabled
+        state_before = self.state
+        pos_before = self.pos
+        obs = self.get_local_observation() if recording else None
+
+        # Compute net risk. When recording, the observation already carries
+        # the arrest probability, so reuse it rather than scanning the
+        # neighbourhood a second time.
+        arrest_prob = obs["arrest_prob"] if recording else self._estimated_arrest_prob()
         net_risk = self.risk_aversion * arrest_prob
 
         # Decision rule: rebel if grievance - net_risk > threshold
@@ -121,6 +164,9 @@ class ClassicCitizenAgent(BaseAgent):
         # Move to random empty cell in vision
         if self.model.movement:
             self._move()
+
+        if recording:
+            panel.append(cv_panel_row(self, obs, state_before, pos_before))
 
     def _move(self):
         """Move to a random empty cell within vision."""
@@ -159,6 +205,7 @@ class ClassicCopAgent(BaseAgent):
 
     def step(self):
         """Arrest a random active citizen in vision, then move."""
+        cop_pos = self.pos  # captured before this cop moves
         neighbors = self.model.grid.get_neighbors(
             self.pos, moore=True, radius=self.vision)
         actives = [n for n in neighbors
@@ -166,8 +213,23 @@ class ClassicCopAgent(BaseAgent):
 
         if actives:
             target = self.random.choice(actives)
+            target_pos = target.pos
             target.state = JAILED
             target.jail_term = self.random.randint(1, self.model.max_jail_term)
+
+            # The model's aggregate arrest count is a before/after difference
+            # and cannot say who arrested whom or where; this record can.
+            arrests = getattr(self.model, "arrests", None)
+            if arrests is not None and arrests.enabled:
+                arrests.append({
+                    "step": self.model.schedule_step,
+                    "activation_idx": getattr(self, "activation_idx", -1),
+                    "cop_id": self.unique_id,
+                    "cop_x": cop_pos[0], "cop_y": cop_pos[1],
+                    "target_id": target.unique_id,
+                    "target_x": target_pos[0], "target_y": target_pos[1],
+                    "jail_term": target.jail_term,
+                })
 
         # Move to random empty cell
         if self.model.movement:

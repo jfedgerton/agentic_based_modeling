@@ -18,6 +18,7 @@ from mesa.datacollection import DataCollector
 from src.agents.classic_pd import ClassicPDAgent
 from src.agents.llm_pd import LLMPDAgent
 from src.llm.provider import LLMProvider
+from src.utils.agent_panel import AgentPanelWriter, disabled_writer
 from src.utils.logging import ExperimentLogger
 
 COOPERATE = "COOPERATE"
@@ -71,6 +72,7 @@ class PDGridModel(Model):
                  payoff_matrix: Optional[dict] = None,
                  llm_provider: Optional[LLMProvider] = None,
                  logger: Optional[ExperimentLogger] = None,
+                 panel_writer: Optional[AgentPanelWriter] = None,
                  seed: Optional[int] = None):
         super().__init__(seed=seed)
 
@@ -79,6 +81,7 @@ class PDGridModel(Model):
         self.agent_type_name = agent_type
         self.logger = logger
         self.schedule_step = 0
+        self.panel = panel_writer or disabled_writer()
 
         self.payoff_matrix = payoff_matrix or {
             "CC": 3, "CD": 0, "DC": 5, "DD": 1,
@@ -118,6 +121,11 @@ class PDGridModel(Model):
             agent_reporters={
                 "action": lambda a: a.action if hasattr(a, "action") else None,
                 "payoff": lambda a: a.payoff if hasattr(a, "payoff") else None,
+                # PD agents are placed once and never move, so these are
+                # constant per agent — recorded anyway so the frame is
+                # self-contained rather than requiring the id-to-cell formula.
+                "x": lambda a: a.pos[0] if a.pos else None,
+                "y": lambda a: a.pos[1] if a.pos else None,
             },
         )
 

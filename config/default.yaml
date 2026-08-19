@@ -71,3 +71,7 @@ logging:
   log_rationales: true
   log_parse_failures: true
   log_metrics: true
+  # Per-agent panel: one row per agent per step with decision-time position
+  # and observed neighbourhood. Written to its own Parquet file, separate
+  # from records.jsonl. Set false to restore the pre-panel behaviour exactly.
+  log_agent_panel: true

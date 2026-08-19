@@ -17,7 +17,9 @@ import math
 from typing import Literal, Optional
 
 from src.agents.base import AgentDecision, BaseAgent, parse_llm_response
-from src.agents.classic_cv import ClassicCopAgent, QUIET, ACTIVE, JAILED
+from src.agents.classic_cv import (
+    ClassicCopAgent, cv_panel_row, QUIET, ACTIVE, JAILED,
+)
 from src.llm.provider import LLMProvider
 from src.prompts import get_prompt
 
@@ -133,9 +135,15 @@ class LLMCitizenAgent(BaseAgent):
                 self.state = QUIET
             return
 
+        # Captured before the LLM call: the agent moves at the end of this
+        # method, so self.pos would otherwise be the post-move position.
+        state_before = self.state
+        pos_before = self.pos
+
         obs = self.get_local_observation()
         prompt = self._build_prompt(obs)
         raw_response = self.llm.query(prompt)
+        parse_failed = False
 
         try:
             decision = parse_llm_response(raw_response, _SURFACE_LABELS[self.mode])
@@ -143,6 +151,7 @@ class LLMCitizenAgent(BaseAgent):
             decision.action = canonical
             self.state = canonical
         except (ValueError, json.JSONDecodeError) as e:
+            parse_failed = True
             if hasattr(self.model, "logger") and self.model.logger:
                 self.model.logger.log_parse_failure(
                     step=getattr(self.model, "schedule_step", -1),
@@ -185,3 +194,10 @@ class LLMCitizenAgent(BaseAgent):
             if empty_cells:
                 new_pos = self.random.choice(empty_cells)
                 self.model.grid.move_agent(self, new_pos)
+
+        panel = getattr(self.model, "panel", None)
+        if panel is not None and panel.enabled:
+            panel.append(cv_panel_row(
+                self, obs, state_before, pos_before,
+                confidence=decision.confidence, parse_failed=parse_failed,
+            ))

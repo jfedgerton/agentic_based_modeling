@@ -18,6 +18,7 @@ from src.agents.classic_cv import ClassicCitizenAgent, ClassicCopAgent
 from src.agents.classic_cv import QUIET, ACTIVE, JAILED
 from src.agents.llm_cv import LLMCitizenAgent
 from src.llm.provider import LLMProvider
+from src.utils.agent_panel import AgentPanelWriter, disabled_writer
 from src.utils.logging import ExperimentLogger
 
 
@@ -63,6 +64,8 @@ class CivilViolenceModel(Model):
                  language: str = "en",
                  llm_provider: Optional[LLMProvider] = None,
                  logger: Optional[ExperimentLogger] = None,
+                 panel_writer: Optional[AgentPanelWriter] = None,
+                 arrest_writer: Optional[AgentPanelWriter] = None,
                  seed: Optional[int] = None):
         super().__init__(seed=seed)
 
@@ -76,6 +79,12 @@ class CivilViolenceModel(Model):
         self.logger = logger
         self.schedule_step = 0
         self._arrests_this_step = 0
+
+        # Panel writers are injected: the model records rows, callers decide
+        # where they land. Absent writers disable panel collection entirely,
+        # restoring the pre-panel execution path.
+        self.panel = panel_writer or disabled_writer()
+        self.arrests = arrest_writer or disabled_writer()
 
         self.grid = SingleGrid(width, height, torus=True)
 
@@ -125,6 +134,18 @@ class CivilViolenceModel(Model):
             agent = ClassicCopAgent(self, vision=cop_vision)
             self.grid.place_agent(agent, pos)
 
+        # Agent reporters capture end-of-step positions through a code path
+        # independent of the panel, so the two can be cross-checked. That
+        # matters most for fresh runs, which have no original output to
+        # compare against. Collected only when the panel is on, since they
+        # cost memory proportional to agents x steps.
+        agent_reporters = {
+            "x": lambda a: a.pos[0] if a.pos else None,
+            "y": lambda a: a.pos[1] if a.pos else None,
+            "state": lambda a: getattr(a, "state", None),
+            "jail_term": lambda a: getattr(a, "jail_term", None),
+        } if self.panel.enabled else None
+
         self.datacollector = DataCollector(
             model_reporters={
                 "rebellion_rate": _rebellion_rate,
@@ -132,6 +153,7 @@ class CivilViolenceModel(Model):
                 "jailed_rate": _jailed_rate,
                 "arrests_this_step": _arrest_count,
             },
+            agent_reporters=agent_reporters,
         )
 
     def step(self):
@@ -143,7 +165,12 @@ class CivilViolenceModel(Model):
         agents = list(self.agents)
         self.random.shuffle(agents)
 
-        for agent in agents:
+        for activation_idx, agent in enumerate(agents):
+            # Activation is sequential over a shuffled order, so each agent
+            # sees a mix of already-updated and not-yet-updated neighbours.
+            # Recording the index is what makes that ordering — and hence the
+            # neighbourhood each agent actually observed — recoverable offline.
+            agent.activation_idx = activation_idx
             if isinstance(agent, ClassicCopAgent):
                 # Count arrests before cop acts
                 pre_actives = sum(
