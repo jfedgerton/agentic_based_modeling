@@ -36,8 +36,23 @@ dir.create(OUT_LOGS,    showWarnings = FALSE, recursive = TRUE)
 PARSE_FAILURE_EXCLUSION_THRESHOLD <- 0.05   # a run is excluded if more than 5% of its LLM calls fail to parse
 STEADY_STATE_STEPS <- 51:100                 # steady state = mean over steps 51-100 of a 100-step run
 
-# PDF device: cairo_pdf embeds fonts cleanly but needs Cairo, which some R builds on macOS lack; fall back to pdf()
-PDF_DEVICE <- if (isTRUE(capabilities("cairo"))) grDevices::cairo_pdf else grDevices::pdf
+# PDF device: cairo_pdf embeds fonts, but on macOS without XQuartz it reports Cairo as available and then writes
+# nothing (only a warning). So test it on a scratch file and fall back to pdf() if no file appears.
+cairo_pdf_works <- function() {
+  f <- tempfile(fileext = ".pdf")
+  n_open <- length(grDevices::dev.list())
+  ok <- tryCatch({
+    suppressWarnings(grDevices::cairo_pdf(f, width = 3, height = 3))
+    if (length(grDevices::dev.list()) > n_open) { grid::grid.rect(); grDevices::dev.off() }
+    file.exists(f) && file.size(f) > 0
+  }, error = function(e) {
+    if (length(grDevices::dev.list()) > n_open) grDevices::dev.off()
+    FALSE
+  })
+  unlink(f)
+  isTRUE(ok)
+}
+PDF_DEVICE <- if (cairo_pdf_works()) grDevices::cairo_pdf else grDevices::pdf
 
 # ---- Known column contracts (from ABM/one_simulation/readme_OUTPUT.md) --
 EXPECTED_COLS <- list(
