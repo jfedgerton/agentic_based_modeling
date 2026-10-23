@@ -1,0 +1,27 @@
+mode,text_prefix,code,note
+calculator,"Against all-B neighbors, playing A yields 0 per neighbor while B yields 1",endorses_defection,"says it would keep B, plays A"
+calculator,"Against the observed mix of 4 A and 4 B neighbors, choosing A would have yielded",endorses_defection,"says B remains payoff-maximizing, plays A"
+calculator,"Against all-A neighbors, A gives 3 per neighbor versus 5 per neighbor for B",coordination,keeps A to preserve local coordination
+calculator,"Against the current neighborhood, A performs well",coordination,keeps A to match neighbors
+calculator,A dominates B in this game,misreads_payoffs,claims A dominates B
+calculator,A is the safer best-response to a mostly-A neighborhood,misreads_payoffs,says A earns more than B against A
+roleplayer,"Because the best-performing neighbor strategy was CLOSE, some neighbors may keep closing",reciprocity,opens hoping neighbors reciprocate
+roleplayer,"Because half of the neighbors opened last round, opening again gives a chance",reciprocity,opens for mutual gains
+roleplayer,"With most neighbors likely to remain closed, opening can exploit their closure",misreads_payoffs,says opening exploits closed neighbors
+roleplayer,"If neighbors keep closing, opening lets you exploit them",misreads_payoffs,says opening earns 5 against closers
+roleplayer,Since all neighbors opened and OPEN was the best-performing strategy,reciprocity,keeps mutual openness
+calculator,"Against the observed mix, A yields 3*3 + 5*0 = 9, which matches the pa",coordination,"follows neighbors or the best-performing neighbor strategy (added Oct 23, codebook v1)"
+calculator,"Against the current mix, A would have beaten B in the sense that it wo",reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+calculator,"With 6 of 8 neighbors choosing A, switching to A is likely to improve ",reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,"Since most neighbors opened last round, opening again should convert m",reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,"Since OPEN was the best-performing neighbor strategy last round, recip",reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,Opening performed reasonably well last round and is likely to keep gen,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,Since OPEN was the best-performing neighbor strategy and I already did,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,Since most neighbors opened and OPEN was the best-performing strategy ,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,"Since OPEN was the best-performing neighbor strategy last round, it is",reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,Since half the neighbors opened and the best-performing neighbor strat,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,With most neighbors opening and OPEN being the best-performing strateg,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,"Since OPEN was the best-performing neighbor strategy last round, there",coordination,"follows neighbors or the best-performing neighbor strategy (added Oct 23, codebook v1)"
+roleplayer,Since every neighbor opened last round and the best-performing neighbo,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,Because most neighbors opened and OPEN was the best-performing strateg,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+roleplayer,OPEN performed best among neighbor strategies last round and aligns wi,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
