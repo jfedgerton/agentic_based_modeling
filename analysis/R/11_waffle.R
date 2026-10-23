@@ -48,7 +48,10 @@ assert_that(!any(is.na(cells$prompt)) && !any(is.na(DEV_LAB[cells$deviation])), 
 # "no deviation" cells are stated in the text (Jared, Oct 22). Each panel has its own legend and palette.
 
 # Largest-remainder rounding to exactly 100 squares per cell
-waffle <- dev %>% mutate(reason = factor(reason, levels = REASONS)) %>% arrange(cell, reason) %>%
+# Within each waffle, squares fill from the largest reason to the smallest (Jared, Oct 23); 'Other or unclassified'
+# always comes last. The legend keeps the fixed REASONS order.
+waffle <- dev %>% mutate(reason = factor(reason, levels = REASONS)) %>%
+  arrange(cell, reason == "Other or unclassified", desc(share), reason) %>%
   group_by(cell) %>% mutate(raw = 100 * share, n = floor(raw)) %>%
   mutate(n = n + (rank(-(raw - n), ties.method = "first") <= (100 - sum(n)))) %>%
   uncount(n) %>% mutate(i = row_number() - 1, x = i %% 10, y = 9 - i %/% 10) %>% ungroup() %>%
@@ -60,10 +63,10 @@ assert_that(all(waffle$model[waffle$game == "pd"] == "GPT"), "Prisoner's dilemma
 # unique to a panel get Dark2 colours not used by the other panel, so no colour means two different things.
 PAL <- c("Says the other option is better" = DARK2[1], "Misreads or miscalculates payoffs" = DARK2[2],
          "Reciprocity" = DARK2[3], "Coordination" = DARK2[4],                       # prisoner's dilemma only
-         "Follows its own calculation" = DARK2[5], "Arrest risk, no fellow protesters" = DARK2[6],
+         "Follows its own calculation" = "#4D004B", "Arrest risk, no fellow protesters" = DARK2[6],  # plum: strongest colour-blind contrast
          "Arrest risk, other reasons" = "#386CB0",  # ColorBrewer Accent blue; Dark2 brown was too close to Dark2 yellow  # civil violence only
          "No fellow protesters, no arrest risk" = DARK2[7],                         # civil violence only (codebook v1)
-         "Other or unclassified" = DARK2[8])
+         "Other or unclassified" = "#BDBDBD")                                     # light grey, distinct from the plum
 assert_that(setequal(names(PAL), REASONS) && !any(duplicated(PAL)), "Palette must cover every reason once")
 panel_cols <- function(g) PAL[REASONS[REASONS %in% waffle$reason[waffle$game == g]]]
 
