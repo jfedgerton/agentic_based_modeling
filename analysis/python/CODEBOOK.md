@@ -75,3 +75,29 @@ is Says the other option is better, then Misreads, then Reciprocity, then Coordi
 Strata are the machine's own outputs, so the sample estimates the precision of each machine label. The coder fills in
 T1 (A, B or none), T2 (two 0/1 features) and T3 (one PD category). We report per-stratum agreement, overall accuracy
 weighted by stratum size, and Cohen's kappa, in the Supplementary Materials.
+
+## T4. Crisis game: why GPT agents overstate their strength (Fig. 5B; `05_ic_signal_reasons.py`)
+
+Unit. One signal-phase call of a GPT crisis-game agent, steps 51-100, in which the agent signals a higher level than
+its honest one. Honest level, as in the classic agent: capability above 0.66 is high, above 0.33 medium, else low.
+Capability is the value printed in the agent's own prompt. Signal meaning is taken from the prompt the agent
+answered (calculator S1/S2/S3 = low/medium/high value_a; reasoner and role-player WEAK/MODERATE/STRONG), not from the
+simulation's stored label, which reverses the calculator scale (see README). Unparsed calls are skipped.
+
+Categories, first match wins (rules R1-R5 in `05_ic_signal_reasons.py`):
+
+| Rule | Category | The rationale ... |
+|---|---|---|
+| R1 | Misreads own strength | describes its own capability or value_a as high, strong or above average (vague words such as decent or solid do not count), and its capability is below 0.5 |
+| R2 | Misreads the rules | says the signal changes role assignment, matching or partner selection (roles are fixed by grid position and step parity, and neighbors never change) |
+| R3 | Bluffs openly | says, in a sentence that does not reject or warn against it, that it is bluffing, overstating, overclaiming, inflating, exaggerating or misleading, or that its true strength is hidden or unverifiable ("avoid an empty bluff" or "overstating risks war" does not count, nor does repeating the prompt's note that signals may be strategic) |
+| R4 | Deterrence or bargaining leverage | cites deterrence, leverage, better terms, discouraging aggressive demands, projecting strength or resolve, credibility, reputation, or not looking weak |
+| R5 | Keeps past signal or payoff | cites continuing, maintaining or repeating its previous signal, consistency, or a good previous payoff |
+| R6 | Other or unclassified | none of the above |
+
+Precedence puts the two errors first (a rationale that misreads the game is coded as a misreading even when it also
+cites deterrence), then an explicit bluff, then the strategic reason, then habit.
+
+Validation. `06_ic_validation_sample.py` draws a blind sample stratified by framing x machine label, 6 per stratum
+(smaller strata whole), seed 123. The coder sees framing, true capability, signalled level and text, and assigns one
+code 1-6 using the table above.

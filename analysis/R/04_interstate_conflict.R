@@ -41,6 +41,58 @@ n_classic <- n_distinct(ic_core$run_id[ic_core$agent_type == "classic"])
 assert_that(n_classic == 1, sprintf("Expected one bluffing-enabled classic crisis-game run, found %d", n_classic))
 assert_that(all(table(ic_core$run_id) == 100), "Every crisis-game run should have 100 steps")
 
+# ---- Bluff rate corrected for the calculator signal labels ----------------------------------------------------------
+# The calculator prompt offers "S1 (low value_a), S2 (medium value_a), or S3 (high value_a)", but the simulation code at
+# tag v1.0-experiments stores them as S1 -> STRONG, S2 -> MODERATE, S3 -> WEAK (_SIGNAL_SURFACE_TO_CANONICAL in
+# src/agents/llm_interstate_conflict.py). Decide prompts reverse the same mapping, so calculator agents saw the labels
+# they chose and war frequency and payoffs are unaffected. The logged bluff_rate and bluff_success_rate (a weak agent,
+# true capability < 0.5, whose stored signal is STRONG) therefore count calculator agents who signal LOW.
+# Both are recomputed here from dyads.parquet using the meaning of the broadcast signal (calculator: stored WEAK = S3 =
+# high; every other arm: stored STRONG = high). Check: with the stored labels the recomputation must reproduce the
+# logged values exactly, for every run and step.
+ic_runs <- run_index %>% filter(game == "ic", batch == "one_seed", !excluded)
+assert_that(setequal(ic_runs$run_id, unique(ic_core$run_id)), "Crisis-game runs in run_index and panel differ")
+bluff_fix <- list()
+for (i in seq_len(nrow(ic_runs))) {
+  run <- ic_runs[i, ]
+  dy <- nanoparquet::read_parquet(file.path(run$run_dir, "dyads.parquet"))
+  sides <- bind_rows(
+    tibble(step = dy$step, id = dy$proposer_id, sig = dy$proposer_signal, cap = dy$proposer_true_capability, war = dy$war),
+    tibble(step = dy$step, id = dy$responder_id, sig = dy$responder_signal, cap = dy$responder_true_capability, war = dy$war))
+  agents <- distinct(sides, step, id, sig, cap)
+  assert_that(nrow(agents) == nrow(distinct(sides, step, id)), sprintf("%s: an agent has two signals in one step", run$run_id))
+  high_stored <- "STRONG"
+  high_meant  <- if (run$agent_type == "calculator") "WEAK" else "STRONG"
+  rate <- function(x) if (length(x) == 0) 0 else mean(x)
+  per_step <- agents %>% group_by(step) %>%
+    summarise(n_agents = n(),
+              bluff_check = rate(sig[cap < 0.5] == high_stored),
+              bluff_fixed = rate(sig[cap < 0.5] == high_meant), .groups = "drop") %>%
+    left_join(sides %>% group_by(step) %>%
+                summarise(success_check = rate(!war[cap < 0.5 & sig == high_stored]),
+                          success_fixed = rate(!war[cap < 0.5 & sig == high_meant]), .groups = "drop"), by = "step") %>%
+    mutate(run_id = run$run_id)
+  assert_that(n_distinct(per_step$n_agents) == 1 && nrow(per_step) == 100,
+              sprintf("%s: agent count varies across steps or steps are missing in dyads.parquet", run$run_id))
+  bluff_fix[[i]] <- per_step
+}
+bluff_fix <- bind_rows(bluff_fix)
+ic_core <- ic_core %>% left_join(bluff_fix, by = c("run_id", "step"))
+assert_that(!anyNA(ic_core$bluff_fixed), "Corrected bluff rate missing for some crisis-game steps")
+assert_that(max(abs(ic_core$bluff_rate - ic_core$bluff_check)) < 1e-9,
+            "Recomputed bluff rate with stored labels does not reproduce the logged bluff_rate")
+assert_that(max(abs(ic_core$bluff_success_rate - ic_core$success_check)) < 1e-9,
+            "Recomputed bluff success with stored labels does not reproduce the logged bluff_success_rate")
+ic_core <- ic_core %>%
+  mutate(bluff_rate_logged = bluff_rate, bluff_success_rate_logged = bluff_success_rate,
+         bluff_rate = bluff_fixed, bluff_success_rate = success_fixed) %>%
+  select(-n_agents, -bluff_check, -bluff_fixed, -success_check, -success_fixed)
+assert_that(all(abs(ic_core$bluff_rate - ic_core$bluff_rate_logged) < 1e-9 | ic_core$agent_type == "calculator"),
+            "Bluff correction changed an arm other than the calculator")
+log_msg("04", sprintf("Calculator bluff rate, steps 51-100: logged %.3f, corrected %.3f",
+                      mean(ic_core$bluff_rate_logged[ic_core$agent_type == "calculator" & ic_core$step %in% STEADY_STATE_STEPS]),
+                      mean(ic_core$bluff_rate[ic_core$agent_type == "calculator" & ic_core$step %in% STEADY_STATE_STEPS])))
+
 # Steady state, steps 51-100, as in the canonical games. Brackets in the table are the lowest and highest
 # per-step values over those steps: within-run fluctuation, not uncertainty across seeds (one run per arm).
 ic_dynamics_summary <- ic_core %>%

@@ -24,6 +24,13 @@ python3 python/02_summarise.py "$OUT" python/pd_rationale_codes.csv | tee -a log
 # The validation sample (python/validation/) is drawn once and hand-coded, so it is NOT redrawn here; only its machine
 # labels are refreshed. To redraw it: python3 python/04_validation_sample.py derived/text/deviation_labels.csv.gz python/validation 50
 python3 python/04_validation_sample.py "$OUT/deviation_labels.csv.gz" python/validation --rekey | tee -a logs/text_analysis.log
+# Crisis game: reasons for overstating strength (Fig. 5B), and its validation sample (drawn once; rekeyed after that)
+python3 python/05_ic_signal_reasons.py "$ABM_ROOT" "$OUT" | tee -a logs/text_analysis.log
+if [ -f python/validation/ic_validation_key.csv ]; then
+  python3 python/06_ic_validation_sample.py "$OUT/ic_signal_labels.csv.gz" python/validation --rekey | tee -a logs/text_analysis.log
+else
+  python3 python/06_ic_validation_sample.py "$OUT/ic_signal_labels.csv.gz" python/validation | tee -a logs/text_analysis.log
+fi
 
 echo "== 2/2 Statistics, figures and tables (R)"
 Rscript R/run_all.R 2>&1 | tee logs/run_all_R.log

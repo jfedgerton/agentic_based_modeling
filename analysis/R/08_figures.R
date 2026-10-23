@@ -106,8 +106,8 @@ fig2_row <- function(g, ylab, title, ytrans = "identity") {
     scale_y_continuous(trans = ytrans, breaks = if (ytrans == "sqrt") SQRT_BREAKS else waiver()) +
     labs(x = "Step", y = ylab, title = title, colour = NULL, fill = NULL)
 }
-fig2 <- (fig2_row("pd", "Cooperation rate", "a  Prisoner's dilemma") /
-           fig2_row("cv", "Mobilized share\n(sqrt scale)", "b  Civil violence", "sqrt")) +
+fig2 <- (fig2_row("pd", "Cooperation rate", "A  Prisoner's dilemma") /
+           fig2_row("cv", "Mobilized share\n(sqrt scale)", "B  Civil violence", "sqrt")) +
   plot_layout(guides = "collect") & theme(legend.position = "bottom")
 fig2 <- fig2 + plot_annotation(caption = "Lines: mean over 5 seeds; ribbons: min-max across seeds; dashed: classic rule-based agents.")
 save_fig(fig2, "fig2_trajectories", height = 5.4)
@@ -118,19 +118,32 @@ save_fig(fig2, "fig2_trajectories", height = 5.4)
 pd_trans <- read_csv(file.path(OUT_DERIVED, "pd_transition_rule.csv"), show_col_types = FALSE) %>%
   filter(n >= 20) %>%
   mutate(Agent = prov_lab(provider),
-         arm_lab = if_else(agent_type == "classic", "Classic",
-                           paste0(Agent, "\n", sub("\n.*", "", MODE_LAB[agent_type]))),
+         # Faceted by model (strips on the right), so rows only need the short framing name (Jared, Oct 23)
+         model_lab = factor(recode(provider, openai = "GPT", deepseek = "DeepSeek", mock = "ABM"),  # ABM = classic rule-based agent
+                            levels = c("GPT", "DeepSeek", "ABM")),
+         arm_lab = factor(if_else(agent_type == "classic", "Classic rule", sub("\n.*", "", MODE_LAB[agent_type])),
+                          levels = rev(c("Calculator", "Reasoner", "Role-player", "Classic rule"))),
          cell = paste0("Own: ", tolower(substr(action_before, 1, 1)),
                        " / best nbr: ", tolower(substr(best_neighbor_action, 1, 1))))
+# Heat map: reversed magma (cream = 0, near-black = 1), perceptually uniform, colour-blind safe and ordered in greyscale
+# (Jared, Oct 23). Cell labels switch to white on dark cells by luminance.
+MAGMA <- viridisLite::magma(101, direction = -1, begin = 0.05, end = 0.97)
+lum <- function(h) { m <- grDevices::col2rgb(h) / 255; drop(c(0.2126, 0.7152, 0.0722) %*% m) }
+pd_trans <- pd_trans %>% mutate(txt = if_else(lum(MAGMA[round(p_coop * 100) + 1]) < 0.45, "white", "grey10"))
+assert_that(!anyNA(pd_trans$model_lab) && !anyNA(pd_trans$arm_lab), "Fig 3A: unknown provider or framing label")
 fig3a <- ggplot(pd_trans, aes(x = cell, y = arm_lab, fill = p_coop)) +
   geom_tile(colour = "white", linewidth = 0.8) +
-  geom_text(aes(label = sprintf("%.2f", p_coop)), size = 2.6,
-            colour = if_else(pd_trans$p_coop > 0.55, "white", "grey15")) +
-  scale_fill_gradient(low = "#EAF2F8", high = "#0B3C5D", limits = c(0, 1), name = "P(cooperate)") +
+  facet_grid(model_lab ~ ., scales = "free_y", space = "free_y") +
+  geom_text(aes(label = sprintf("%.2f", p_coop), colour = txt), size = 3.4, fontface = "bold") +
+  scale_colour_identity() +
+  scale_fill_gradientn(colours = MAGMA, limits = c(0, 1), name = "P(cooperate)") +
   scale_x_discrete(labels = function(x) gsub(" / ", "\n", x)) +
   labs(x = "State at t-1 (c = cooperate, d = defect)", y = NULL,
-       title = "a  PD: probability of cooperating given own and best neighbour's last action") +
-  theme(panel.grid = element_blank())
+       title = "A  PD: probability of cooperating given own and best neighbour's last action") +
+  theme(panel.grid = element_blank(), axis.text = element_text(size = 9, colour = "black"),
+        strip.text.y = element_text(size = 9, face = "bold", angle = -90), panel.spacing.y = unit(4, "pt"),
+        axis.title = element_text(size = 9.5), legend.text = element_text(size = 8.5),
+        legend.title = element_text(size = 9), legend.key.width = unit(28, "pt"))
 
 cv_curve <- read_csv(file.path(OUT_DERIVED, "cv_activation_curve.csv"), show_col_types = FALSE) %>%
   filter(n >= 50, bin_mid >= -0.3, bin_mid <= 0.5) %>%
@@ -141,20 +154,47 @@ llm_curve <- cv_curve %>% filter(agent_type != "classic") %>%
 classic_curve_rep <- tidyr::crossing(classic_curve, mode = factor(MODE_LAB, levels = MODE_LAB))
 thr <- read_csv(file.path(OUT_DERIVED, "cv_threshold_recovery.csv"), show_col_types = FALSE) %>%
   filter(agent_type == "classic") %>% pull(recovered_threshold) %>% mean()
-fig3b <- ggplot(llm_curve, aes(bin_mid, p_active, colour = Agent, shape = Agent)) +
+# Black-and-white safe: each agent has its own colour (Okabe-Ito), line type and marker; the classic rule is a dashed
+# step with open squares, GPT a solid line with circles, DeepSeek a dot-dash line with triangles.
+LTY3 <- c("Classic (rule-based)" = "dashed", "DeepSeek" = "dotdash", "GPT (OpenAI)" = "solid")
+SHP3 <- c("Classic (rule-based)" = 0, "DeepSeek" = 17, "GPT (OpenAI)" = 16)
+fig3b <- ggplot(llm_curve, aes(bin_mid, p_active, colour = Agent, shape = Agent, linetype = Agent)) +
   geom_vline(xintercept = thr, linetype = "dotted", colour = "grey40") +
-  geom_step(data = classic_curve_rep, direction = "mid", linetype = "dashed", linewidth = 0.5) +
+  geom_step(data = classic_curve_rep, direction = "mid", linewidth = 0.5) +
+  geom_point(data = classic_curve_rep, size = 1.4) +
   geom_line(linewidth = 0.6) + geom_point(size = 1.4) +
   facet_wrap(~mode, nrow = 1) +
-  scale_colour_manual(values = COL) + scale_shape_manual(values = SHP) +
+  scale_colour_manual(values = COL) + scale_shape_manual(values = SHP3) + scale_linetype_manual(values = LTY3) +
+  theme(legend.key.width = unit(24, "pt"), axis.text = element_text(size = 9, colour = "black"),
+        axis.title = element_text(size = 9.5), legend.text = element_text(size = 9)) +
   labs(x = "Net incentive to rebel (grievance - risk aversion x arrest probability)",
-       y = "P(active)", colour = NULL, shape = NULL,
-       title = sprintf("b  CV: activation curve (dashed = classic rule; dotted = its threshold, %.3f)", thr))
-fig3 <- (fig3a / fig3b) + plot_layout(heights = c(1.1, 1)) & theme(legend.position = "bottom")
-save_fig(fig3, "fig3_decision_rules", height = 6.6)
+       y = "P(active)", colour = NULL, shape = NULL, linetype = NULL,
+       title = "B  CV: probability of activating by net incentive")  # line meanings are in the legend and caption
+fig3 <- (fig3a / fig3b) + plot_layout(heights = c(1.2, 1)) & theme(legend.position = "bottom")
+# Panels A and B share left edges, so B's axis column is as wide as A's row labels and B's y title would sit far from
+# its axis. Move B's y title next to B's own axis numbers (Jared, Oct 23).
+g3 <- patchwork::patchworkGrob(fig3)
+ylab_rows <- which(grepl("^ylab-l", g3$layout$name))
+ylab_B <- ylab_rows[which.max(g3$layout$t[ylab_rows])]
+axis_B <- which(grepl("^axis-l", g3$layout$name) & g3$layout$t == g3$layout$t[ylab_B])
+assert_that(length(axis_B) == 1, "Fig 3: could not find panel B's y axis in the patchwork layout")
+gB <- ggplotGrob(fig3b)
+wB <- gB$widths[gB$layout$l[gB$layout$name == "axis-l-1-1"]]
+assert_that(length(wB) == 1, "Fig 3: could not measure panel B's axis-label width")
+g3$grobs[[ylab_B]] <- grid::nullGrob()
+g3 <- gtable::gtable_add_grob(g3, grid::textGrob("P(active)", x = grid::unit(1, "npc") - wB - grid::unit(4, "pt"),
+                                                  rot = 90, vjust = 0, gp = grid::gpar(fontsize = 9.5)),
+                              t = g3$layout$t[ylab_B], b = g3$layout$b[ylab_B], l = g3$layout$l[axis_B],
+                              name = "ylab-B-moved", clip = "off")
+# Both titles start where the axes start: put each title in the first panel column of the shared layout
+title_rows <- which(grepl("^title-", g3$layout$name))
+panel_cols <- g3$layout$l[grepl("^panel", g3$layout$name) & g3$layout$name != "panel-area"]
+assert_that(length(title_rows) == 2 && length(panel_cols) > 0, "Fig 3: unexpected title or panel layout")
+g3$layout$l[title_rows] <- min(panel_cols)
+save_fig(g3, "fig3_decision_rules", height = 6.6)
 
 # =============================================================================
-# FIG 4 -- out of sample: interstate conflict
+# FIG S1 -- parse failures by game and model
 # =============================================================================
 run_index <- read_csv(file.path(OUT_DERIVED, "run_index.csv"), show_col_types = FALSE)
 pf <- run_index %>%
@@ -171,23 +211,11 @@ fig4a <- ggplot(pf, aes(game_lab, pfr, colour = Agent, shape = Agent)) +
   scale_y_log10(labels = label_percent(accuracy = 0.001), breaks = c(1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1)) +
   scale_colour_manual(values = COL) + scale_shape_manual(values = SHP) +
   labs(x = NULL, y = "Share of decisions that failed to parse\n(log scale; floor 0.001%)", colour = NULL, shape = NULL,
-       title = "a  Parse failures: DeepSeek breaks down only in the novel game")
+       title = NULL)
+# Supplement: parse failures by game and model (moved out of the main crisis-game figure)
+save_fig(fig4a + theme(legend.position = "bottom"), "figS_parse_failures", height = 3.4)
 
-ic_ts <- read_csv(file.path(OUT_DERIVED, "ic_dynamics_timeseries.csv"), show_col_types = FALSE) %>%
-  group_by(agent_type, provider, step) %>%
-  summarise(across(c(war_frequency, bluff_rate), mean), .groups = "drop") %>%
-  pivot_longer(c(war_frequency, bluff_rate), names_to = "metric", values_to = "value") %>%
-  mutate(metric = recode(metric, war_frequency = "War frequency", bluff_rate = "Bluff rate"),
-         arm = if_else(agent_type == "classic", "Classic (rule-based)", paste0("GPT ", agent_type)))
-IC_COL <- c("Classic (rule-based)" = "grey25", "GPT calculator" = "#9ECAE1", "GPT reasoner" = "#4292C6", "GPT roleplayer" = "#08306B")
-fig4b <- ggplot(ic_ts, aes(step, value, colour = arm, linetype = arm == "Classic (rule-based)")) +
-  geom_line(linewidth = 0.6) +
-  facet_wrap(~metric, nrow = 1, scales = "free_y") +
-  scale_colour_manual(values = IC_COL) + scale_linetype_manual(values = c(`TRUE` = "dashed", `FALSE` = "solid"), guide = "none") +
-  labs(x = "Step", y = NULL, colour = NULL,
-       title = "b  GPT in the novel crisis-bargaining game (1 seed per arm; DeepSeek excluded)")
-fig4 <- (fig4a / fig4b) + plot_layout(heights = c(1, 1)) & theme(legend.position = "bottom")
-save_fig(fig4, "fig4_out_of_sample", height = 6.4)
+# Fig. 5 (crisis-game trajectories and reasons) is drawn by R/12_fig5_crisis.R
 
 # =============================================================================
 # EXTENDED DATA

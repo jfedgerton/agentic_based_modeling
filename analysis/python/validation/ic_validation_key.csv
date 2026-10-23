@@ -1,0 +1,104 @@
+item,task,row_id,mode,capability,rule,label
+1,T4,roleplayer|77|269,roleplayer,0.2,R6,Other or unclassified
+2,T4,reasoner|96|150,reasoner,0.2,R5,Keeps past signal or payoff
+3,T4,calculator|67|233,calculator,0.22,R4,Deterrence or bargaining leverage
+4,T4,reasoner|60|82,reasoner,0.18,R3,Bluffs openly
+5,T4,reasoner|95|232,reasoner,0.46,R1,Misreads own strength
+6,T4,roleplayer|88|81,roleplayer,0.11,R3,Bluffs openly
+7,T4,calculator|88|255,calculator,0.42,R6,Other or unclassified
+8,T4,calculator|51|229,calculator,0.65,R6,Other or unclassified
+9,T4,calculator|58|43,calculator,0.2,R6,Other or unclassified
+10,T4,calculator|60|63,calculator,0.41,R1,Misreads own strength
+11,T4,roleplayer|55|269,roleplayer,0.2,R2,Misreads the rules
+12,T4,calculator|77|225,calculator,0.57,R5,Keeps past signal or payoff
+13,T4,calculator|86|229,calculator,0.65,R2,Misreads the rules
+14,T4,reasoner|52|288,reasoner,0.65,R4,Deterrence or bargaining leverage
+15,T4,reasoner|92|143,reasoner,0.47,R1,Misreads own strength
+16,T4,roleplayer|92|15,roleplayer,0.58,R2,Misreads the rules
+17,T4,roleplayer|94|337,roleplayer,0.5,R4,Deterrence or bargaining leverage
+18,T4,reasoner|93|359,reasoner,0.25,R3,Bluffs openly
+19,T4,calculator|82|195,calculator,0.64,R6,Other or unclassified
+20,T4,roleplayer|73|117,roleplayer,0.3,R3,Bluffs openly
+21,T4,calculator|58|325,calculator,0.38,R2,Misreads the rules
+22,T4,calculator|94|145,calculator,0.15,R6,Other or unclassified
+23,T4,roleplayer|78|371,roleplayer,0.33,R6,Other or unclassified
+24,T4,roleplayer|59|268,roleplayer,0.2,R5,Keeps past signal or payoff
+25,T4,roleplayer|88|219,roleplayer,0.46,R1,Misreads own strength
+26,T4,reasoner|61|309,reasoner,0.3,R3,Bluffs openly
+27,T4,calculator|54|257,calculator,0.47,R1,Misreads own strength
+28,T4,reasoner|74|375,reasoner,0.32,R2,Misreads the rules
+29,T4,reasoner|76|172,reasoner,0.57,R4,Deterrence or bargaining leverage
+30,T4,roleplayer|74|323,roleplayer,0.61,R4,Deterrence or bargaining leverage
+31,T4,roleplayer|100|385,roleplayer,0.49,R1,Misreads own strength
+32,T4,reasoner|88|353,reasoner,0.59,R4,Deterrence or bargaining leverage
+33,T4,roleplayer|78|359,roleplayer,0.33,R4,Deterrence or bargaining leverage
+34,T4,calculator|60|90,calculator,0.32,R5,Keeps past signal or payoff
+35,T4,roleplayer|87|146,roleplayer,0.3,R6,Other or unclassified
+36,T4,calculator|62|376,calculator,0.5,R2,Misreads the rules
+37,T4,reasoner|51|178,reasoner,0.43,R1,Misreads own strength
+38,T4,roleplayer|96|20,roleplayer,0.25,R5,Keeps past signal or payoff
+39,T4,reasoner|89|188,reasoner,0.43,R1,Misreads own strength
+40,T4,reasoner|64|321,reasoner,0.25,R6,Other or unclassified
+41,T4,calculator|89|208,calculator,0.3,R1,Misreads own strength
+42,T4,roleplayer|53|101,roleplayer,0.28,R5,Keeps past signal or payoff
+43,T4,calculator|67|200,calculator,0.32,R2,Misreads the rules
+44,T4,roleplayer|66|2,roleplayer,0.46,R1,Misreads own strength
+45,T4,roleplayer|70|194,roleplayer,0.27,R2,Misreads the rules
+46,T4,roleplayer|75|16,roleplayer,0.55,R4,Deterrence or bargaining leverage
+47,T4,reasoner|52|27,reasoner,0.31,R6,Other or unclassified
+48,T4,reasoner|76|347,reasoner,0.21,R6,Other or unclassified
+49,T4,roleplayer|58|389,roleplayer,0.23,R6,Other or unclassified
+50,T4,reasoner|91|91,reasoner,0.19,R5,Keeps past signal or payoff
+51,T4,calculator|61|374,calculator,0.28,R1,Misreads own strength
+52,T4,reasoner|88|139,reasoner,0.22,R6,Other or unclassified
+53,T4,calculator|51|22,calculator,0.44,R2,Misreads the rules
+54,T4,roleplayer|55|175,roleplayer,0.59,R4,Deterrence or bargaining leverage
+55,T4,reasoner|54|77,reasoner,0.31,R5,Keeps past signal or payoff
+56,T4,roleplayer|86|7,roleplayer,0.55,R4,Deterrence or bargaining leverage
+57,T4,roleplayer|51|399,roleplayer,0.47,R1,Misreads own strength
+58,T4,roleplayer|95|154,roleplayer,0.5,R3,Bluffs openly
+59,T4,calculator|59|350,calculator,0.66,R6,Other or unclassified
+60,T4,reasoner|82|57,reasoner,0.19,R2,Misreads the rules
+61,T4,roleplayer|90|102,roleplayer,0.23,R5,Keeps past signal or payoff
+62,T4,reasoner|88|216,reasoner,0.18,R6,Other or unclassified
+63,T4,reasoner|92|373,reasoner,0.31,R4,Deterrence or bargaining leverage
+64,T4,roleplayer|73|219,roleplayer,0.46,R3,Bluffs openly
+65,T4,reasoner|78|200,reasoner,0.29,R5,Keeps past signal or payoff
+66,T4,roleplayer|76|318,roleplayer,0.43,R2,Misreads the rules
+67,T4,reasoner|92|113,reasoner,0.24,R4,Deterrence or bargaining leverage
+68,T4,calculator|99|121,calculator,0.4,R4,Deterrence or bargaining leverage
+69,T4,reasoner|86|361,reasoner,0.3,R2,Misreads the rules
+70,T4,reasoner|54|267,reasoner,0.18,R3,Bluffs openly
+71,T4,reasoner|74|51,reasoner,0.65,R4,Deterrence or bargaining leverage
+72,T4,calculator|56|399,calculator,0.51,R4,Deterrence or bargaining leverage
+73,T4,reasoner|86|364,reasoner,0.47,R1,Misreads own strength
+74,T4,roleplayer|63|209,roleplayer,0.2,R3,Bluffs openly
+75,T4,calculator|81|28,calculator,0.42,R5,Keeps past signal or payoff
+76,T4,roleplayer|93|39,roleplayer,0.15,R6,Other or unclassified
+77,T4,roleplayer|69|79,roleplayer,0.27,R3,Bluffs openly
+78,T4,roleplayer|89|118,roleplayer,0.26,R6,Other or unclassified
+79,T4,roleplayer|72|97,roleplayer,0.43,R1,Misreads own strength
+80,T4,calculator|92|154,calculator,0.61,R5,Keeps past signal or payoff
+81,T4,calculator|94|76,calculator,0.65,R5,Keeps past signal or payoff
+82,T4,roleplayer|94|348,roleplayer,0.31,R2,Misreads the rules
+83,T4,reasoner|55|216,reasoner,0.18,R6,Other or unclassified
+84,T4,calculator|54|156,calculator,0.32,R5,Keeps past signal or payoff
+85,T4,roleplayer|99|290,roleplayer,0.19,R5,Keeps past signal or payoff
+86,T4,calculator|75|63,calculator,0.41,R1,Misreads own strength
+87,T4,calculator|63|28,calculator,0.42,R3,Bluffs openly
+88,T4,reasoner|78|208,reasoner,0.47,R1,Misreads own strength
+89,T4,roleplayer|53|45,roleplayer,0.16,R5,Keeps past signal or payoff
+90,T4,reasoner|73|309,reasoner,0.3,R2,Misreads the rules
+91,T4,reasoner|58|255,reasoner,0.3,R3,Bluffs openly
+92,T4,roleplayer|72|287,roleplayer,0.44,R1,Misreads own strength
+93,T4,reasoner|81|168,reasoner,0.22,R5,Keeps past signal or payoff
+94,T4,reasoner|59|27,reasoner,0.31,R3,Bluffs openly
+95,T4,calculator|67|247,calculator,0.12,R4,Deterrence or bargaining leverage
+96,T4,calculator|96|193,calculator,0.39,R2,Misreads the rules
+97,T4,reasoner|82|195,reasoner,0.54,R2,Misreads the rules
+98,T4,calculator|74|385,calculator,0.47,R1,Misreads own strength
+99,T4,calculator|54|276,calculator,0.34,R4,Deterrence or bargaining leverage
+100,T4,calculator|76|114,calculator,0.52,R4,Deterrence or bargaining leverage
+101,T4,reasoner|82|56,reasoner,0.23,R2,Misreads the rules
+102,T4,roleplayer|83|270,roleplayer,0.46,R2,Misreads the rules
+103,T4,reasoner|66|289,reasoner,0.47,R5,Keeps past signal or payoff

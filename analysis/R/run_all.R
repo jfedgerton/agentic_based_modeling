@@ -25,10 +25,11 @@ scripts <- c(
   "05_cv_longrun.R",         # 500-step civil-violence check
   "06_provider_divergence.R",# steady-state outcomes per run, exact permutation tests, framing interaction
   "07_decision_rules.R",     # PD transition rule, CV activation curves
-  "08_figures.R",            # Figs 2-4 (divergence, trajectories, decision rules, crisis game) and ED figures
+  "08_figures.R",            # divergence, trajectories, decision rules, parse failures and SM figures
   "09_tables.R",             # Table 2, ED Tables 1-2, table S3
   "10_alluvial.R",           # fig. S4
-  "11_waffle.R"              # Fig. waffle (needs derived/text/ from the Python step)
+  "11_waffle.R",             # Fig. 4 waffle (needs derived/text/ from the Python step)
+  "12_fig5_crisis.R"         # Fig. 5 crisis game: trajectories and reasons for overstating strength
 )
 
 start_time <- Sys.time()
@@ -42,7 +43,7 @@ for (s in scripts) {
 # ---- Every manuscript item must exist and be fresh ----------------------------------------------------------
 MANUSCRIPT <- c(
   "figures/fig1_provider_divergence.pdf", "figures/fig2_trajectories.pdf", "figures/fig3_decision_rules.pdf",
-  "figures/fig4_out_of_sample.pdf", "figures/fig_waffle_deviations.pdf", "figures/ed1_divergence_triangle.pdf",
+  "figures/fig4_out_of_sample.pdf", "figures/figS_parse_failures.pdf", "figures/fig_waffle_deviations.pdf", "figures/ed1_divergence_triangle.pdf",
   "figures/ed2_cv_longrun.pdf", "figures/ed3_language_vs_provider.pdf", "figures/alluvial_design_2col.pdf",
   "tables/table2_provider_divergence.tex", "tables/table_ic.tex", "tables/ed_table1_framing_interaction.tex",
   "tables/ed_table2_interstate_conflict.tex", "tables/appendixB_run_completeness.tex")
