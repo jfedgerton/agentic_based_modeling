@@ -19,6 +19,9 @@ for d in "$RUNS"/pd_calculator_* "$RUNS"/pd_reasoner_* "$RUNS"/pd_roleplayer_* \
          "$RUNS"/cv_calculator_* "$RUNS"/cv_reasoner_* "$RUNS"/cv_roleplayer_*; do
   python3 python/01_rationales_by_run.py "$d" "$OUT" >> logs/text_analysis.log
 done
+# The prisoner's dilemma benchmark (classic copy-the-best rule for every agent-step) is computed in R from the parquet
+# panels, because the Python steps use the standard library only
+Rscript R/00_pd_classic_rule.R 2>&1 | tee -a logs/text_analysis.log
 python3 python/03_label_deviations.py "$RUNS" "$OUT" python/pd_rationale_codes.csv | tee -a logs/text_analysis.log
 python3 python/02_summarise.py "$OUT" python/pd_rationale_codes.csv | tee -a logs/text_analysis.log
 # The validation sample (python/validation/) is drawn once and hand-coded, so it is NOT redrawn here; only its machine

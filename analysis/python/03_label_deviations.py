@@ -2,11 +2,14 @@
 
 Python 3.10 standard library only. Read-only on the run folders.
 A deviating decision is one where the LLM agent's action differs from the classic rule-based agent's action in the
-same state (prisoner's dilemma: any cooperation; civil violence: active iff G - N > 0.1). Steps 51-100, five seeds.
+same state. Prisoner's dilemma: the classic rule copies the action of the top scorer among the agent and its 8
+neighbors last round (computed for every agent-step by R/00_pd_classic_rule.R; ties between top scorers with
+different actions are AMBIGUOUS and skipped). Civil violence: active iff G - N > 0.1. Steps 51-100, five seeds.
 G - N is computed from the values printed in the agent's prompt (two decimals), i.e. the classic rule applied to
 the information the LLM agent was given. Parse failures are skipped.
 Writes derived/text/deviation_labels.csv.gz, one row per deviating decision, with the machine label and the rule
 that produced it. Usage: python3 03_label_deviations.py <runs_dir> <out_dir> <pd_codes_csv>
+(reads <out_dir>/pd_classic_rule.csv.gz, written by R/00_pd_classic_rule.R)
 """
 import json, glob, os, re, math, sys, csv, gzip, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -25,8 +28,13 @@ CVKEYS = {'calculator': ('value_1', 'value_2', 'value_3', 'count_X nearby', 'cou
           'roleplayer': ('Your hardship level', 'How legitimate you perceive the government to be', 'Your risk aversion',
                          'Police visible', 'Protesters currently demonstrating')}
 PD_LAB = {'endorses_defection': 'Says the other option is better', 'misreads_payoffs': 'Misreads or miscalculates payoffs',
-          'reciprocity': 'Reciprocity', 'coordination': 'Coordination'}
+          'reciprocity': 'Reciprocity', 'coordination': 'Coordination', 'own_calculation': 'Follows its own calculation'}
 pd_codes = list(csv.DictReader(open(pd_codes_csv)))
+rule_path = os.path.join(out_dir, 'pd_classic_rule.csv.gz')
+assert os.path.exists(rule_path), 'run R/00_pd_classic_rule.R before 03_label_deviations.py'
+PD_RULE = {(r['run'], int(r['step']), str(r['agent_id'])): r['rule_action'] for r in csv.DictReader(gzip.open(rule_path, 'rt'))}
+assert len(PD_RULE) == 700000, f'expected 700,000 PD agent-steps in pd_classic_rule.csv.gz, found {len(PD_RULE)}'
+
 def num(p, k):
     m = re.search(re.escape(k) + r'[^:\n]*:\s*([-+]?[0-9]*\.?[0-9]+)', p)
     return float(m.group(1)) if m else None
@@ -53,8 +61,12 @@ for d in LLM_RUNS:
         text = str((r.get('parsed') or {}).get('short_rationale') or '').strip()
         m, pref, rule = '', '', ''
         if game == 'pd':
-            if a != 'COOPERATE':
+            rule_a = PD_RULE[(run, r['step'], str(r.get('agent_id')))]
+            if rule_a == 'AMBIGUOUS':
+                n[('pd', mode, model, 'rule ambiguous (skipped)')] += 1
                 continue
+            if a == rule_a:
+                continue  # agrees with the classic rule
             hits = [x['code'] for x in pd_codes if x['mode'] == mode and text.startswith(x['text_prefix'])]
             assert len(hits) <= 1, text[:80]
             label = PD_LAB.get(hits[0], 'Other or unclassified') if hits else 'Other or unclassified'
@@ -83,4 +95,4 @@ for d in LLM_RUNS:
 out.close()
 for k, v in sorted(n.items()):
     print(*k, v, sep='\t')
-assert row_id == 104165, f'expected 104,165 deviating decisions, found {row_id}'
+assert row_id == 98657, f'expected 98,657 deviating decisions (codebook v2, PD benchmark = classic copy-the-best rule), found {row_id}'

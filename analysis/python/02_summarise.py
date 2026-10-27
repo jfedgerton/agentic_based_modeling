@@ -90,31 +90,36 @@ for mode in ('calculator', 'reasoner', 'roleplayer'):
 import gzip
 lab_path = os.path.join(out_dir, 'deviation_labels.csv.gz')
 assert os.path.exists(lab_path), 'run 03_label_deviations.py before 02_summarise.py'
-# Each cell is restricted to its dominant direction, so the waffle label (e.g. "Quiet, classic rule active") and n
-# describe exactly the decisions shown. The few opposite-direction decisions (GPT calculator 15 quiet, GPT role-player
-# 37 active, DeepSeek role-player 5 active) are dropped from the figure and counted in the log.
+# A direction is shown as its own waffle cell if it holds at least 5% of the arm's deviating decisions, so each label
+# (e.g. "Quiet, classic rule active") and n describe exactly the decisions shown. This keeps both directions for the
+# GPT calculator prisoner's dilemma arm (cooperates where the classic rule defects, and defects where it cooperates)
+# and drops the few opposite-direction decisions elsewhere (civil violence: GPT calculator 15 quiet, GPT role-player
+# 37 active, DeepSeek role-player 5 active; prisoner's dilemma: GPT role-player 10 defections), counted in the log.
 lab_rows = list(csv.DictReader(gzip.open(lab_path, 'rt')))
-assert len(lab_rows) == 104165, 'expected 104,165 deviating decisions'
-direction = lambda r: 'cooperates' if r['action'] == 'COOPERATE' else ('dev_active' if r['action'] == 'ACTIVE' else 'dev_quiet')
+assert len(lab_rows) == 98657, 'expected 98,657 deviating decisions (codebook v2)'
+def direction(r):
+    return {'COOPERATE': 'cooperates', 'DEFECT': 'defects', 'ACTIVE': 'dev_active', 'QUIET': 'dev_quiet'}[r['action']]
 dirs = collections.defaultdict(collections.Counter)
 for r in lab_rows:
     dirs[(r['game'], r['mode'], r['model'])][direction(r)] += 1
-main_dir = {k: max(v, key=v.get) for k, v in dirs.items()}
+shown = {(k, d) for k, v in dirs.items() for d, c in v.items() if c >= 0.05 * sum(v.values())}
 cells = collections.defaultdict(collections.Counter)
 for r in lab_rows:
     k = (r['game'], r['mode'], r['model'])
-    if direction(r) == main_dir[k]:
-        cells[k][r['label']] += 1
-dropped = {k: sum(v.values()) - v[main_dir[k]] for k, v in dirs.items()}
-assert sum(dropped.values()) == 57, f'expected 57 opposite-direction decisions, found {sum(dropped.values())}'
-DEV_DIR = {'cooperates': 'cooperates where the classic rule defects', 'dev_active': 'active where the classic rule is quiet',
-           'dev_quiet': 'quiet where the classic rule is active'}
+    if (k, direction(r)) in shown:
+        cells[k + (direction(r),)][r['label']] += 1
+dropped = sum(c for k, v in dirs.items() for d, c in v.items() if (k, d) not in shown)
+assert dropped == 67, f'expected 67 decisions in minority directions (57 civil violence, 10 prisoner\'s dilemma), found {dropped}'
+assert len(cells) == 9, f'expected 9 waffle cells, found {len(cells)}'
+DEV_DIR = {'cooperates': 'cooperates where the classic rule defects', 'defects': 'defects where the classic rule cooperates',
+           'dev_active': 'active where the classic rule is quiet', 'dev_quiet': 'quiet where the classic rule is active'}
 rows = []
-for (game, mode, model), c in sorted(cells.items()):
-    n = sum(c.values()); main = main_dir[(game, mode, model)]
+for (game, mode, model, d), c in sorted(cells.items()):
+    n = sum(c.values())
     for reason, x in c.most_common():
-        rows.append([f'{game}_{mode}_{model.lower()}', game, mode, model, DEV_DIR[main], n, reason, round(x / n, 5)])
-    print(f'{game} {mode:10s} {model:8s} deviations {dict(dirs[(game, mode, model)])}; shown {n}, opposite direction dropped {dropped[(game, mode, model)]}')
+        rows.append([f'{game}_{mode}_{model.lower()}_{d}', game, mode, model, DEV_DIR[d], n, reason, round(x / n, 5)])
+for k, v in sorted(dirs.items()):
+    print(f'{k[0]} {k[1]:10s} {k[2]:8s} deviations by direction {dict(v)}; shown: {sorted(d for (kk, d) in shown if kk == k)}')
 w = W('deviation_cells.csv')
 w.writerow(['cell', 'game', 'mode', 'model', 'deviation', 'n_decisions', 'reason', 'share'])
 w.writerows(rows)

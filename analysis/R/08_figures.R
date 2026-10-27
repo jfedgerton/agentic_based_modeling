@@ -123,8 +123,8 @@ pd_trans <- read_csv(file.path(OUT_DERIVED, "pd_transition_rule.csv"), show_col_
                             levels = c("GPT", "DeepSeek", "ABM")),
          arm_lab = factor(if_else(agent_type == "classic", "Classic rule", sub("\n.*", "", MODE_LAB[agent_type])),
                           levels = rev(c("Calculator", "Reasoner", "Role-player", "Classic rule"))),
-         cell = paste0("Own: ", tolower(substr(action_before, 1, 1)),
-                       " / best nbr: ", tolower(substr(best_neighbor_action, 1, 1))))
+         cell = paste0("Own: ", toupper(substr(action_before, 1, 1)),
+                       " / Best neighbor: ", toupper(substr(best_neighbor_action, 1, 1))))
 # Heat map: reversed magma (cream = 0, near-black = 1), perceptually uniform, colour-blind safe and ordered in greyscale
 # (Jared, Oct 23). Cell labels switch to white on dark cells by luminance.
 MAGMA <- viridisLite::magma(101, direction = -1, begin = 0.05, end = 0.97)
@@ -138,8 +138,8 @@ fig3a <- ggplot(pd_trans, aes(x = cell, y = arm_lab, fill = p_coop)) +
   scale_colour_identity() +
   scale_fill_gradientn(colours = MAGMA, limits = c(0, 1), name = "P(cooperate)") +
   scale_x_discrete(labels = function(x) gsub(" / ", "\n", x)) +
-  labs(x = "State at t-1 (c = cooperate, d = defect)", y = NULL,
-       title = "A  PD: probability of cooperating given own and best neighbour's last action") +
+  labs(x = "State at t-1 (C = cooperate, D = defect)", y = NULL,
+       title = "A  PD: probability of cooperating given own and best neighbor's last action") +
   theme(panel.grid = element_blank(), axis.text = element_text(size = 9, colour = "black"),
         strip.text.y = element_text(size = 9, face = "bold", angle = -90), panel.spacing.y = unit(4, "pt"),
         axis.title = element_text(size = 9.5), legend.text = element_text(size = 8.5),

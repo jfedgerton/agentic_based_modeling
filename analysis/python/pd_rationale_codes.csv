@@ -25,3 +25,7 @@ roleplayer,"Since OPEN was the best-performing neighbor strategy last round, the
 roleplayer,Since every neighbor opened last round and the best-performing neighbo,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
 roleplayer,Because most neighbors opened and OPEN was the best-performing strateg,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
 roleplayer,OPEN performed best among neighbor strategies last round and aligns wi,reciprocity,"cites mutual, reciprocal or cooperative gains (added Oct 23, codebook v1)"
+calculator,B is the dominant action in pairwise terms: it gives 5 against A and only falls to 1 against B,own_calculation,"defects (B) because B dominates; correct payoff reasoning (added Oct 26, codebook v2: defections where the classic rule cooperates)"
+calculator,"Against a 50/50 mix, B yields 5 against A and 1 against B, for an expected 24 total",own_calculation,"defects (B) because B dominates; correct payoff reasoning (added Oct 26, codebook v2)"
+calculator,"Against the observed mix, B strictly dominates A per neighbor: it gives 5 instead of 3 against A",own_calculation,"defects (B) because B dominates; correct payoff reasoning (added Oct 26, codebook v2)"
+roleplayer,"With 7 open neighbors, closing would exploit their openness and yield strong returns",own_calculation,"closes to exploit open neighbors; correct payoff reasoning (added Oct 26, codebook v2)"

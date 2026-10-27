@@ -5,7 +5,8 @@ Three coding tasks, each validating the one judgment the machine makes (everythi
   T2  CV reasoner/role-player quiet decisions: does the rationale cite arrest risk? the absence of fellow protesters?
       strata = machine feature pattern (both / risk only / no-protesters only); the large 'both' stratum is split
       evenly over the four model x framing cells
-  T3  PD: census of every distinct cooperating rationale (no sampling), coded into the five PD categories
+  T3  PD: census of every distinct deviating rationale (cooperations where the classic rule defects and defections
+      where it cooperates; no sampling), coded into the PD categories
 Strata smaller than n are taken whole. Writes validation/validation_blind.csv (for the human coder, no machine
 labels) and validation/validation_key.csv (machine labels, joined later by row_id).
 Usage: python3 04_validation_sample.py <deviation_labels.csv.gz> <out_dir> [n_per_stratum=50] [--dry-run]
@@ -19,7 +20,7 @@ N = int(sys.argv[3]) if len(sys.argv) > 3 and sys.argv[3].isdigit() else 50
 DRY = '--dry-run' in sys.argv
 rng = random.Random(123)
 rows = list(csv.DictReader(gzip.open(src, 'rt')))
-assert len(rows) == 104165, len(rows)
+assert len(rows) == 98657, len(rows)  # codebook v2
 if '--rekey' in sys.argv:
     by_id = {r['row_id']: r for r in rows}
     key_path = os.path.join(out_dir, 'validation_key.csv')

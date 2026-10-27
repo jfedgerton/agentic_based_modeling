@@ -6,8 +6,13 @@ Implemented in `codebook_rules.py` (civil violence) and `pd_rationale_codes.csv`
 ## Unit of analysis
 
 One deviating decision, meaning one agent in one step (steps 51 to 100, five seeds) whose action differs from the
-action the classic rule-based agent would take in the same state. In the prisoner's dilemma the classic agent always
-defects, so every cooperation is a deviation. In civil violence the classic agent is active if and only if
+action the classic rule-based agent would take in the same state. In the prisoner's dilemma the classic rule copies
+the action of the agent that scored highest last round among the agent itself and its 8 neighbors (20 x 20 torus);
+`R/00_pd_classic_rule.R` computes it for every agent-step from `agent_panel.parquet`, and in the classic runs it
+reproduces every logged action. When top scorers tie but chose different actions, the classic agent's choice depends on
+the simulator's neighbor order, so those agent-steps (0.5% of all PD agent-steps; 3.1% of GPT calculator and 0.4% of GPT
+role-player agent-steps) are marked ambiguous and skipped. (Codebook v1 counted every cooperation as a deviation, because
+the classic agents always defect in steady state; v2 compares with the rule itself, as in civil violence.) In civil violence the classic agent is active if and only if
 G - N > 0.1, where G = H(1 - L) and N = R(1 - exp(-2.3 C / (A + 1))) are computed from the values printed in the
 agent's prompt (two decimals). The benchmark is therefore the classic rule applied to the information the LLM agent
 was given; using the simulator's full-precision state instead changes the reasoner and role-player cell counts by up
@@ -21,7 +26,7 @@ The text coded is the agent's `short_rationale`. Each decision gets exactly one 
 |---|---|---|
 | Says the other option is better | The rationale's conclusion favors the action the agent did not take. | PD, CV calculator |
 | Misreads or miscalculates payoffs | The rationale favors the action taken, but the payoffs it states or implies are wrong. In the PD, it asserts a payoff relation the matrix contradicts (for example that cooperating earns more against defectors, or "exploits" them). In CV calculator, the action contradicts the sign of G - N computed from the prompt's own numbers. | PD, CV calculator |
-| Follows its own calculation | CV calculator only. The rationale favors the action taken and the action matches the sign of G - N, so the agent applies a threshold of 0 where the classic rule uses 0.1. | CV calculator |
+| Follows its own calculation | CV calculator: the rationale favors the action taken and the action matches the sign of G - N, so the agent applies a threshold of 0 where the classic rule uses 0.1. PD: the agent defects where the classic rule cooperates and its rationale states the correct payoffs (defection dominates). | CV calculator, PD |
 | Reciprocity | PD only. Cooperates citing mutual, reciprocal or cooperative gains with neighbors. | PD |
 | Coordination | PD only. Cooperates to match neighbors or the best-performing neighbor strategy, without citing mutual gains. | PD |
 | Arrest risk, no fellow protesters | CV reasoner and role-player quiet decisions citing both features below. | CV |
@@ -65,9 +70,11 @@ Two binary features are coded independently, then crossed into the four CV categ
 
 ### Prisoner's dilemma (human census, `pd_rationale_codes.csv`)
 
-GPT agents produce only 26 distinct cooperating rationales across all PD decisions, so every distinct text is coded
-by hand and the code is applied by exact prefix match. Precedence when a text fits more than one category
-is Says the other option is better, then Misreads, then Reciprocity, then Coordination.
+GPT agents produce only 17 distinct cooperating rationales and 4 distinct defecting rationales among PD deviations, so
+every distinct text is coded by hand and the code is applied by exact prefix match. Precedence when a text fits more
+than one category is Says the other option is better, then Misreads, then Reciprocity, then Coordination. The four
+defecting texts (GPT calculator 3, GPT role-player 1) all state that defection pays more and get the payoffs right, so
+they are coded Follows its own calculation (codebook v2, Oct 26).
 
 ## Validation
 

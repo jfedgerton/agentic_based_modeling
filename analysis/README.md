@@ -77,13 +77,17 @@ A run is dropped from analysis if any of these holds, and `derived/run_index.csv
 - Steady state: mean over steps 51-100 of a 100-step run (`STEADY_STATE_STEPS` in `R/00_config.R`). Every reported
   quantity uses this window, including the decision rules (`R/07`) and the threshold recovery (`R/03`).
 - Deviation (text analysis): a decision where the LLM agent's action differs from the classic rule's action in the
-  same state. Prisoner's dilemma, any cooperation. Civil violence, active if and only if G - N > 0.1, computed from
-  the values printed in the agent's prompt. Decisions whose response failed to parse are skipped, because the logged
-  action is the classic fallback. See `python/CODEBOOK.md` for the reason categories and rules. Each waffle cell
-  shows only its dominant direction (e.g. quiet where the classic rule is active), so its label and n describe exactly
-  the decisions shown; 57 opposite-direction decisions (under 1% of any cell) are dropped and listed in
-  `logs/text_analysis.log`.
-- Validation: `python/validation/validation_blind.csv` (375 items, seed 123) is for hand coding and is not redrawn by
+  same state. Prisoner's dilemma: the classic rule copies the action of the top scorer last round among the agent and
+  its 8 neighbors (`R/00_pd_classic_rule.R`, which reproduces every logged action of the classic runs; 0.5% of
+  agent-steps where top scorers tie with different actions are skipped). Civil violence: active if and only if
+  G - N > 0.1, computed from the values printed in the agent's prompt. Decisions whose response failed to parse are
+  skipped, because the logged action is the classic fallback. See `python/CODEBOOK.md` (codebook v2) for the reason
+  categories and rules. 98,657 deviating decisions. A direction gets its own waffle cell if it holds at least 5% of
+  the arm's deviations (both directions for the GPT calculator prisoner's dilemma arm); the 67 decisions in minority
+  directions (57 civil violence, 10 prisoner's dilemma) are dropped and listed in `logs/text_analysis.log`. Fig. 4
+  does not draw the GPT calculator's 1,968 prisoner's dilemma defections where the classic rule cooperates, because all
+  carry one reason (follows its own calculation); `R/11_waffle.R` checks this and the text reports it.
+- Validation: `python/validation/validation_blind.csv` (349 items, seed 123) is for hand coding and is not redrawn by
   `run_all.sh`; machine labels are in `validation_key.csv`. After a codebook change, refresh the machine labels without
   redrawing with `python3 python/04_validation_sample.py derived/text/deviation_labels.csv.gz python/validation --rekey`.
 

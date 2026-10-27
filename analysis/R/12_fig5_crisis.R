@@ -43,7 +43,17 @@ IC_LTY <- c("Classic (rule-based)" = "dashed", "GPT calculator" = "solid", "GPT 
             "GPT role-player" = "dotdash")
 IC_SHP <- c("Classic (rule-based)" = 0, "GPT calculator" = 4, "GPT reasoner" = 2, "GPT role-player" = 16)
 assert_that(setequal(unique(ic_ts$arm), names(IC_COL)), "Unexpected crisis-game arms")
+# Steps 1-50 are burn-in (light grey band behind the lines); every reported crisis-game number averages steps 51-100
+# (STEADY_STATE_STEPS). Band labels sit in the empty top strip of the war-frequency panel, above every line (Jared, Oct 27).
+assert_that(max(ic_ts$value[ic_ts$metric == "War frequency"]) < 0.9, "War-frequency lines reach the label strip at y = 0.95")
+BURN_END <- min(STEADY_STATE_STEPS) - 0.5
+band_lab <- tibble(metric = factor("War frequency", levels = levels(ic_ts$metric)),
+                   x = c(BURN_END / 2, (BURN_END + 100) / 2), y = 0.95,
+                   label = c("Burn-in", "Steady state (averaged)"))
 pA <- ggplot(ic_ts, aes(step, value, colour = arm, linetype = arm, shape = arm)) +
+  annotate("rect", xmin = -Inf, xmax = BURN_END, ymin = -Inf, ymax = Inf, fill = "grey50", alpha = 0.1) +  # translucent, so gridlines show through
+  geom_text(data = band_lab, aes(x, y, label = label), inherit.aes = FALSE, size = 7 * PT, family = FONT,
+            colour = "black") +
   geom_line(linewidth = 0.45) +
   geom_point(data = filter(ic_ts, step %% 10 == 5), size = 1.4, stroke = 0.6) +
   facet_wrap(~metric, nrow = 1) +
