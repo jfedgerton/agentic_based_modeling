@@ -1,0 +1,8 @@
+mode,code,share_of_decisions,share_of_cooperation
+calculator,endorses_defection,0.239,0.7364
+calculator,coordination,0.0702,0.2162
+calculator,misreads_payoffs,0.0126,0.0387
+calculator,reciprocity,0.0028,0.0086
+roleplayer,reciprocity,0.2597,0.6596
+roleplayer,misreads_payoffs,0.1335,0.3391
+roleplayer,coordination,0.0005,0.0013

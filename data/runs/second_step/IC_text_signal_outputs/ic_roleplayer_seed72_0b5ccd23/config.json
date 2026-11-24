@@ -1,0 +1,78 @@
+{
+  "experiment": {
+    "name": "default_experiment",
+    "random_seed": 42,
+    "num_steps": 100,
+    "num_replications": 5,
+    "output_dir": "outputs",
+    "log_dir": "logs"
+  },
+  "pd_grid": {
+    "width": 20,
+    "height": 20,
+    "payoff_matrix": {
+      "CC": 3,
+      "CD": 0,
+      "DC": 5,
+      "DD": 1
+    },
+    "initial_cooperation_prob": 0.5,
+    "neighborhood": "moore"
+  },
+  "civil_violence": {
+    "width": 40,
+    "height": 40,
+    "citizen_density": 0.7,
+    "cop_density": 0.04,
+    "citizen_vision": 7,
+    "cop_vision": 7,
+    "legitimacy": 0.82,
+    "max_jail_term": 30,
+    "movement": true,
+    "language": "en"
+  },
+  "interstate_conflict": {
+    "width": 20,
+    "height": 20,
+    "signal_form": "free_form_text",
+    "bluffing_enabled": true,
+    "bluffing_rate": 0.3,
+    "capability_dist": [
+      2.0,
+      2.0
+    ],
+    "war_cost_dist": [
+      2.0,
+      5.0
+    ],
+    "capability_range": [
+      0.1,
+      0.9
+    ],
+    "war_cost_range": [
+      0.1,
+      0.5
+    ]
+  },
+  "agent": {
+    "type": "roleplayer"
+  },
+  "llm": {
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "max_tokens": 4096,
+    "cache_enabled": true,
+    "cache_dir": "/Users/luojing/llm_cache_local",
+    "rate_limit_delay": 0.02
+  },
+  "logging": {
+    "level": "INFO",
+    "log_prompts": true,
+    "log_responses": true,
+    "log_rationales": true,
+    "log_parse_failures": true,
+    "log_metrics": true,
+    "log_agent_panel": true
+  }
+}

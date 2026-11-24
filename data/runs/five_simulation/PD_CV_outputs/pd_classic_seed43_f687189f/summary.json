@@ -1,0 +1,10 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "pd_classic_seed43_f687189f",
+  "runtime_seconds": 0.3966667652130127,
+  "total_records": 100,
+  "total_llm_interactions": 0,
+  "total_parse_failures": 0,
+  "llm_stats": null,
+  "finalized_at": "2026-09-10T20:08:23.853674"
+}

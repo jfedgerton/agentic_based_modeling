@@ -1,0 +1,17 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "cv_reasoner_seed53_23687a29",
+  "runtime_seconds": 44.988178968429565,
+  "total_records": 100,
+  "total_llm_interactions": 111975,
+  "total_parse_failures": 6,
+  "llm_stats": {
+    "provider": "DeepSeekProvider",
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "call_count": 0,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0
+  },
+  "finalized_at": "2026-09-10T20:49:27.917704"
+}

@@ -1,0 +1,17 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "cv_calculator_seed44_b101e0f3",
+  "runtime_seconds": 27.876141786575317,
+  "total_records": 100,
+  "total_llm_interactions": 40764,
+  "total_parse_failures": 112,
+  "llm_stats": {
+    "provider": "OpenAIProvider",
+    "model": "gpt-5.4-mini",
+    "temperature": 0.0,
+    "call_count": 0,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0
+  },
+  "finalized_at": "2026-09-10T20:31:34.094038"
+}

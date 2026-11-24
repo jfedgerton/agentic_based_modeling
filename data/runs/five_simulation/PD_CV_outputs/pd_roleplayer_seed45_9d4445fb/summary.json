@@ -1,0 +1,17 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "pd_roleplayer_seed45_9d4445fb",
+  "runtime_seconds": 3.412984609603882,
+  "total_records": 100,
+  "total_llm_interactions": 40000,
+  "total_parse_failures": 0,
+  "llm_stats": {
+    "provider": "OpenAIProvider",
+    "model": "gpt-5.4-mini",
+    "temperature": 0.0,
+    "call_count": 0,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0
+  },
+  "finalized_at": "2026-09-10T20:10:33.433855"
+}

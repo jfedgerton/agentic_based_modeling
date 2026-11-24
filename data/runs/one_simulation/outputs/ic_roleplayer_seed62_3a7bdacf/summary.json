@@ -1,0 +1,17 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "ic_roleplayer_seed62_3a7bdacf",
+  "runtime_seconds": 41.04852104187012,
+  "total_records": 100,
+  "total_llm_interactions": 80000,
+  "total_parse_failures": 40884,
+  "llm_stats": {
+    "provider": "DeepSeekProvider",
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "call_count": 0,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0
+  },
+  "finalized_at": "2026-08-03T00:39:06.896330"
+}

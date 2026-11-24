@@ -1,0 +1,17 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "pd_reasoner_seed42_bf4e3a72",
+  "runtime_seconds": 7.495680809020996,
+  "total_records": 100,
+  "total_llm_interactions": 40000,
+  "total_parse_failures": 0,
+  "llm_stats": {
+    "provider": "OpenAIProvider",
+    "model": "gpt-5.4-mini",
+    "temperature": 0.0,
+    "call_count": 0,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0
+  },
+  "finalized_at": "2026-08-02T23:40:11.246137"
+}

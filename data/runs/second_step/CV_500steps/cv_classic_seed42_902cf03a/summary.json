@@ -1,0 +1,10 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "cv_classic_seed42_902cf03a",
+  "runtime_seconds": 43.45112895965576,
+  "total_records": 500,
+  "total_llm_interactions": 0,
+  "total_parse_failures": 0,
+  "llm_stats": null,
+  "finalized_at": "2026-09-16T09:44:55.326810"
+}

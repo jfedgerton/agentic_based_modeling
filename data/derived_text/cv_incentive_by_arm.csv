@@ -1,0 +1,7 @@
+mode,provider,decisions,pct_active_incentive_below_0,pct_active_0_to_0.1,pct_active_above_0.1,calc_wrong,calc_wrong_rationale_disagrees,calc_wrong_rationale_agrees,calc_wrong_unclassified
+calculator,deepseek,256931,0.01,100.0,100.0,36,0,36,0
+calculator,openai,86863,13.83,83.73,94.81,12025,9020,2964,41
+reasoner,deepseek,279918,0.0,0.0,0.0,0,0,0,0
+reasoner,openai,279829,0.0,0.0,0.06,0,0,0,0
+roleplayer,deepseek,279157,0.0,0.01,0.15,0,0,0,0
+roleplayer,openai,277906,0.0,0.17,2.62,0,0,0,0

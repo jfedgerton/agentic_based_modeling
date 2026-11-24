@@ -1,0 +1,13 @@
+game,mode,provider,decisions,classified,contradictions,B_says_A,A_says_B
+cv,calculator,deepseek,256931,211917,1258,19,1239
+cv,calculator,openai,86863,81131,8658,8265,393
+cv,reasoner,deepseek,279918,141412,7684,0,7684
+cv,reasoner,openai,279829,214277,839,0,839
+cv,roleplayer,deepseek,279157,93951,0,0,0
+cv,roleplayer,openai,277906,179530,7,0,7
+pd,calculator,deepseek,100000,0,0,0,0
+pd,calculator,openai,99981,48640,0,0,0
+pd,reasoner,deepseek,100000,100000,0,0,0
+pd,reasoner,openai,100000,100000,0,0,0
+pd,roleplayer,deepseek,100000,0,0,0,0
+pd,roleplayer,openai,100000,24085,0,0,0

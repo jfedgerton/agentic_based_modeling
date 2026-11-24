@@ -1,0 +1,17 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "ic_reasoner_seed52_fb0f53a8",
+  "runtime_seconds": 492.21959018707275,
+  "total_records": 100,
+  "total_llm_interactions": 80000,
+  "total_parse_failures": 43931,
+  "llm_stats": {
+    "provider": "DeepSeekProvider",
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "call_count": 7,
+    "total_prompt_tokens": 4879,
+    "total_completion_tokens": 28672
+  },
+  "finalized_at": "2026-08-06T06:39:25.367908"
+}

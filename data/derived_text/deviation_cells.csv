@@ -1,0 +1,28 @@
+cell,game,mode,model,deviation,n_decisions,reason,share
+cv_calculator_deepseek_dev_active,cv,calculator,DeepSeek,active where the classic rule is quiet,1225,Follows its own calculation,0.95673
+cv_calculator_deepseek_dev_active,cv,calculator,DeepSeek,active where the classic rule is quiet,1225,Misreads or miscalculates payoffs,0.02939
+cv_calculator_deepseek_dev_active,cv,calculator,DeepSeek,active where the classic rule is quiet,1225,Other or unclassified,0.00898
+cv_calculator_deepseek_dev_active,cv,calculator,DeepSeek,active where the classic rule is quiet,1225,Says the other option is better,0.0049
+cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Says the other option is better,0.68118
+cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Misreads or miscalculates payoffs,0.21791
+cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Follows its own calculation,0.09768
+cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Other or unclassified,0.00322
+cv_reasoner_deepseek_dev_quiet,cv,reasoner,DeepSeek,quiet where the classic rule is active,4714,"Arrest risk, no fellow protesters",0.99745
+cv_reasoner_deepseek_dev_quiet,cv,reasoner,DeepSeek,quiet where the classic rule is active,4714,"Arrest risk, other reasons",0.00233
+cv_reasoner_deepseek_dev_quiet,cv,reasoner,DeepSeek,quiet where the classic rule is active,4714,"No fellow protesters, no arrest risk",0.00021
+cv_reasoner_gpt_dev_quiet,cv,reasoner,GPT,quiet where the classic rule is active,4698,"Arrest risk, no fellow protesters",0.99723
+cv_reasoner_gpt_dev_quiet,cv,reasoner,GPT,quiet where the classic rule is active,4698,"Arrest risk, other reasons",0.00277
+cv_roleplayer_deepseek_dev_quiet,cv,roleplayer,DeepSeek,quiet where the classic rule is active,4739,"Arrest risk, no fellow protesters",0.99705
+cv_roleplayer_deepseek_dev_quiet,cv,roleplayer,DeepSeek,quiet where the classic rule is active,4739,"Arrest risk, other reasons",0.00274
+cv_roleplayer_deepseek_dev_quiet,cv,roleplayer,DeepSeek,quiet where the classic rule is active,4739,"No fellow protesters, no arrest risk",0.00021
+cv_roleplayer_gpt_dev_quiet,cv,roleplayer,GPT,quiet where the classic rule is active,3873,"Arrest risk, no fellow protesters",0.97573
+cv_roleplayer_gpt_dev_quiet,cv,roleplayer,GPT,quiet where the classic rule is active,3873,"Arrest risk, other reasons",0.01936
+cv_roleplayer_gpt_dev_quiet,cv,roleplayer,GPT,quiet where the classic rule is active,3873,"No fellow protesters, no arrest risk",0.00491
+pd_calculator_gpt_cooperates,pd,calculator,GPT,cooperates where the classic rule defects,26022,Says the other option is better,0.91822
+pd_calculator_gpt_cooperates,pd,calculator,GPT,cooperates where the classic rule defects,26022,Coordination,0.04984
+pd_calculator_gpt_cooperates,pd,calculator,GPT,cooperates where the classic rule defects,26022,Misreads or miscalculates payoffs,0.0264
+pd_calculator_gpt_cooperates,pd,calculator,GPT,cooperates where the classic rule defects,26022,Reciprocity,0.00553
+pd_calculator_gpt_defects,pd,calculator,GPT,defects where the classic rule cooperates,1968,Follows its own calculation,1.0
+pd_roleplayer_gpt_cooperates,pd,roleplayer,GPT,cooperates where the classic rule defects,38309,Reciprocity,0.65084
+pd_roleplayer_gpt_cooperates,pd,roleplayer,GPT,cooperates where the classic rule defects,38309,Misreads or miscalculates payoffs,0.34856
+pd_roleplayer_gpt_cooperates,pd,roleplayer,GPT,cooperates where the classic rule defects,38309,Coordination,0.0006

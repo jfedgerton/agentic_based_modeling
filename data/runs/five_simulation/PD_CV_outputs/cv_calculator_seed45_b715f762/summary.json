@@ -1,0 +1,17 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "cv_calculator_seed45_b715f762",
+  "runtime_seconds": 49.4543559551239,
+  "total_records": 100,
+  "total_llm_interactions": 103503,
+  "total_parse_failures": 34,
+  "llm_stats": {
+    "provider": "DeepSeekProvider",
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "call_count": 0,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0
+  },
+  "finalized_at": "2026-09-10T20:47:10.387409"
+}

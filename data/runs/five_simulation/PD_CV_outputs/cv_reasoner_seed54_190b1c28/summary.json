@@ -1,0 +1,17 @@
+{
+  "experiment_name": "default_experiment",
+  "run_id": "cv_reasoner_seed54_190b1c28",
+  "runtime_seconds": 48.847355127334595,
+  "total_records": 100,
+  "total_llm_interactions": 111984,
+  "total_parse_failures": 33,
+  "llm_stats": {
+    "provider": "OpenAIProvider",
+    "model": "gpt-5.4-mini",
+    "temperature": 0.0,
+    "call_count": 0,
+    "total_prompt_tokens": 0,
+    "total_completion_tokens": 0
+  },
+  "finalized_at": "2026-09-10T20:35:35.446887"
+}
