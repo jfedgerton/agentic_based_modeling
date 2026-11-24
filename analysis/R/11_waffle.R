@@ -90,13 +90,24 @@ assert_that(all(waffle$model[waffle$game == "pd"] == "GPT"), "Prisoner's dilemma
 
 # Separate legends per panel, Dark2 throughout. Reasons shared by both panels keep one colour; reasons
 # unique to a panel get Dark2 colours not used by the other panel, so no colour means two different things.
-PAL <- c("Says the other option is better" = DARK2[1], "Misreads or miscalculates payoffs" = DARK2[2],
+PAL <- c("Says the other option is better" = "#0E6E52",  # Dark2 teal darkened, as in Fig. 5B: separates from pink under deuteranopia (CAM02-UCS 3.7 -> 18.3)
+         "Misreads or miscalculates payoffs" = DARK2[2],
          "Reciprocity" = DARK2[3], "Coordination" = DARK2[4],                       # prisoner's dilemma only
          "Follows its own calculation" = "#4D004B", "Arrest risk, no fellow protesters" = DARK2[6],  # plum: strongest colour-blind contrast
          "Arrest risk, other reasons" = "#386CB0",  # ColorBrewer Accent blue; Dark2 brown was too close to Dark2 yellow  # civil violence only
          "No fellow protesters, no arrest risk" = DARK2[7],                         # civil violence only (codebook v1)
          "Other or unclassified" = "#BDBDBD")                                     # light grey, distinct from the plum
 assert_that(setequal(names(PAL), REASONS) && !any(duplicated(PAL)), "Palette must cover every reason once")
+# Small texture on each tile, one glyph per reason, so reasons stay distinct in grey scale and for colour-blind readers.
+# Glyph is white on dark fills and black on light ones; "Other or unclassified" gets none.
+SHP <- c("Says the other option is better" = "/", "Misreads or miscalculates payoffs" = "-", "Reciprocity" = "|",
+         "Coordination" = "+", "Follows its own calculation" = "\\", "Arrest risk, no fellow protesters" = "o",
+         "Arrest risk, other reasons" = "x", "No fellow protesters, no arrest risk" = "=", "Other or unclassified" = " ")
+GLY <- c("Says the other option is better" = "white", "Misreads or miscalculates payoffs" = "white", "Reciprocity" = "white",
+         "Coordination" = "white", "Follows its own calculation" = "white", "Arrest risk, no fellow protesters" = "black",
+         "Arrest risk, other reasons" = "white", "No fellow protesters, no arrest risk" = "white", "Other or unclassified" = "black")
+assert_that(setequal(names(SHP), REASONS) && setequal(names(GLY), REASONS), "Every reason needs a glyph and a glyph colour")
+assert_that(!any(duplicated(na.omit(SHP))), "Each glyph must mean one reason")
 USED <- REASONS[REASONS %in% waffle$reason]
 
 # Sized for Science's full page width (3 columns, about 18.3 cm = 7.2 in) at final print size, so every
@@ -118,7 +129,8 @@ assert_that(setequal(names(LEG_LAB), REASONS), "Every reason needs a legend labe
 game_panel <- function(g, title, ylim_low, legend_rows = 2) {
   d <- filter(waffle, game == g) %>% droplevels()
   ggplot(d, aes(x, y)) +
-    geom_tile(aes(fill = reason), colour = "white", linewidth = 0.3) +
+    geom_tile(aes(fill = reason), colour = "white", linewidth = 0.3, show.legend = TRUE) +  # TRUE: draw keys for reasons absent from this panel, so both panels build one identical legend
+    geom_point(aes(shape = reason, colour = reason), size = 1.3, na.rm = TRUE, show.legend = TRUE) +
     geom_text(data = filter(cells, game == g), aes(x = if (g == "pd") 2 else 4.5, y = -0.55, label = note), vjust = 1,
               size = 6.5 * PT, lineheight = 0.95, family = FONT, colour = "black") +
     coord_cartesian(xlim = if (g == "pd") c(-0.5, 4.5) else c(-0.5, 9.5),
@@ -126,7 +138,10 @@ game_panel <- function(g, title, ylim_low, legend_rows = 2) {
     facet_grid(row ~ col, drop = TRUE, labeller = labeller(col = COL_STRIP)) +
     # One shared legend for both panels (same colour = same reason everywhere), collected below the figure
     scale_fill_manual(values = PAL[USED], limits = USED, labels = LEG_LAB, name = NULL, drop = FALSE) +
-    guides(fill = guide_legend(nrow = legend_rows, byrow = TRUE)) +
+    scale_shape_manual(values = SHP[USED], limits = USED, labels = LEG_LAB, name = NULL, drop = FALSE) +
+    scale_colour_manual(values = GLY[USED], limits = USED, labels = LEG_LAB, name = NULL, drop = FALSE) +
+    guides(fill = guide_legend(nrow = legend_rows, byrow = TRUE), shape = guide_legend(nrow = legend_rows, byrow = TRUE),
+           colour = guide_legend(nrow = legend_rows, byrow = TRUE)) +
     labs(x = NULL, y = NULL, title = title) +
     theme_minimal(base_size = 7, base_family = FONT) +
     theme(axis.text = element_blank(), panel.grid = element_blank(),

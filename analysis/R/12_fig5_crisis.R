@@ -96,17 +96,26 @@ assert_that(all(table(waffle$mode) == 100), "A framing does not have exactly 100
 PAL <- c("Misreads own strength" = "#D95F02", "Misreads the rules" = "#7570B3", "Bluffs openly" = "#E7298A",
          "Deterrence or bargaining leverage" = "#0E6E52", "Keeps past signal or payoff" = "#E6AB02",
          "Other or unclassified" = "#BDBDBD")
+# Small texture on each tile, one glyph per reason (white on dark fills, black on light ones; none for "Other")
+SHP <- c("Misreads own strength" = "-", "Misreads the rules" = "|", "Bluffs openly" = "+",
+         "Deterrence or bargaining leverage" = "/", "Keeps past signal or payoff" = "o", "Other or unclassified" = " ")
+GLY <- c("Misreads own strength" = "white", "Misreads the rules" = "white", "Bluffs openly" = "white",
+         "Deterrence or bargaining leverage" = "white", "Keeps past signal or payoff" = "black", "Other or unclassified" = "black")
+assert_that(setequal(names(SHP), names(PAL)) && setequal(names(GLY), names(PAL)), "Every reason needs a glyph and a glyph colour")
 LEG_LAB <- c("Misreads own strength" = "Misreads own\nstrength", "Misreads the rules" = "Misreads the\nrules",
              "Bluffs openly" = "Bluffs openly", "Deterrence or bargaining leverage" = "Deterrence or\nbargaining leverage",
              "Keeps past signal or payoff" = "Keeps past signal\nor payoff", "Other or unclassified" = "Other or\nunclassified")
 pB <- ggplot(waffle, aes(x, y)) +
   geom_tile(aes(fill = reason), colour = "white", linewidth = 0.3) +
+  geom_point(aes(shape = reason, colour = reason), size = 1.5, na.rm = TRUE) +
   geom_text(data = cells, aes(x = 4.5, y = -0.55, label = note), vjust = 1, size = 6.5 * PT, lineheight = 0.95,
             family = FONT, colour = "black") +
   coord_cartesian(xlim = c(-0.5, 9.5), ylim = c(-2.1, 9.5), expand = FALSE) +  # fills the width; FIG_W/FIG_H keep tiles square
   facet_wrap(~prompt, nrow = 1) +
-  scale_fill_manual(values = PAL, labels = LEG_LAB, name = NULL, drop = FALSE) +
-  guides(fill = guide_legend(nrow = 1)) +
+  scale_fill_manual(values = PAL, limits = names(PAL), labels = LEG_LAB, name = NULL, drop = FALSE) +
+  scale_shape_manual(values = SHP, limits = names(PAL), labels = LEG_LAB, name = NULL, drop = FALSE) +
+  scale_colour_manual(values = GLY, limits = names(PAL), labels = LEG_LAB, name = NULL, drop = FALSE) +
+  guides(fill = guide_legend(nrow = 1), shape = guide_legend(nrow = 1), colour = guide_legend(nrow = 1)) +
   labs(x = NULL, y = NULL, title = "B  Reasons GPT agents give for overstating their strength") +
   theme_minimal(base_size = 7, base_family = FONT) +
   theme(axis.text = element_blank(), panel.grid = element_blank(), panel.spacing.x = unit(10, "pt"),
