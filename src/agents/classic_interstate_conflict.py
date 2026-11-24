@@ -125,14 +125,14 @@ class ClassicInterstateConflictAgent(BaseAgent):
         return 1.0 - perceived_p_self_wins + self.true_war_cost
 
     def _compute_demand(self, opponent) -> float:
-        """Fearon §pp.394: x = 1 - cap_self / (cap_self + perceived_cap_opp)
-                              + E[war_cost], rounded to nearest bucket.
+        """Fearon §pp.394: largest demand the opponent should accept,
+        x = cap_self / (cap_self + perceived_cap_opp) + E[war_cost],
+        rounded to nearest bucket.
         """
         opp_signal = getattr(opponent, "signal", MODERATE)
         perceived_cap_opp = SIGNAL_TO_CAP.get(opp_signal, 0.5)
         estimated_opp_threshold = (
-            1.0
-            - self.true_capability / (self.true_capability + perceived_cap_opp)
+            self.true_capability / (self.true_capability + perceived_cap_opp)
             + self.model.E_war_cost
         )
         return _round_to_bucket(estimated_opp_threshold)

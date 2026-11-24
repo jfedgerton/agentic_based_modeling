@@ -442,8 +442,7 @@ class LLMInterstateConflictAgent(BaseAgent):
         opp_signal = getattr(opponent, "signal", MODERATE) or MODERATE
         perceived_cap_opp = SIGNAL_TO_CAP.get(opp_signal, 0.5)
         estimated_opp_threshold = (
-            1.0
-            - self.true_capability / (self.true_capability + perceived_cap_opp)
+            self.true_capability / (self.true_capability + perceived_cap_opp)
             + self.model.E_war_cost
         )
         return _round_to_bucket(estimated_opp_threshold)
