@@ -15,7 +15,9 @@ NO_OPT = r'(?:(?!\b(?-i:[AB])\b)(?!\.\s|\.$|;)[^\n])'  # ... and is not itself a
 CHOICE_NOUN = r'the\s+(?:(?!worse|riskier|costlier|inferior|suboptimal)[\w-]+\s+){0,3}(?:choice|option|action|pick)'
 RULES = [
     # R1 explicit choice: "choose A", "I choose the lower-disutility option A", "go with B", "so B"
-    ('R1_choice', re.compile(r"(?:choose|choosing|chose|pick|picking|select|selecting|go with|going with|opt for|opting for|"
+    # A choice verb inside a comparison ("lower than choosing A", "while choosing A gives 0.01") names the option being
+    # compared against, not the option chosen, so it does not count (fix, Nov 25 2026; R4 below reads those comparisons).
+    ('R1_choice', re.compile(r"(?<!\bthan\s)(?<!\bwhile\s)(?:choose|choosing|chose|pick|picking|select|selecting|go with|going with|opt for|opting for|"
                              r"prefer|i will|i'll|i would|i'd|decide to|deciding on|keep|stick with|stay with|switch to|"
                              r"\bso\b|hence|therefore|thus)\s+(?:to\s+)?" + MOD + OPT + r'\b', re.I), 'same'),
     # R2 positive verdict on an option: "B is strictly better", "A is lower by a clear margin", "B minimizes disutility"
@@ -25,7 +27,7 @@ RULES = [
     # R3 negative verdict: "B has much higher disutility", "B is worse" -> the other option
     ('R3_bad', re.compile(r'\b' + OPT + r"(?:'s disutility| disutility)?\s+(?:is|remains|would be|looks|seems|appears|has|gives|yields|produces|carries|would give|would yield)\s+" + ADV + r'(?:a\s+)?' + ADV + BAD + r'\b', re.I), 'other'),
     # R4 comparison against the other option: "lower than A's" / "higher than B's" with the subject option earlier in the clause
-    ('R4_than', re.compile(r'\b' + OPT + r'\b' + SAME_SENT + r'{0,160}?\b(?P<cmp>lower|smaller|less|better|cheaper|higher|larger|greater|more|worse|costlier)\s+than\s+(?:for\s+|that of\s+|option\s+|action\s+)?(?P<o2>(?-i:[AB]))\b', re.I), 'cmp'),
+    ('R4_than', re.compile(r'\b' + OPT + r'\b' + SAME_SENT + r'{0,160}?\b(?P<cmp>lower|smaller|less|better|cheaper|higher|larger|greater|more|worse|costlier)\s+(?:expected\s+)?(?:disutility\s+)?than\s+(?:for\s+|that of\s+|option\s+|action\s+|choosing\s+|selecting\s+|picking\s+)?(?P<o2>(?-i:[AB]))\b', re.I), 'cmp'),
     # R5 trailing verdict on the most recent option: "B gives 0.04, which is lower" / "B ... which is slightly higher"
     ('R5_which_good', re.compile(r'\b' + OPT + r'\b' + NO_OPT + r'{0,160}?,?\s+which\s+is\s+' + ADV + r'(?:lower|smaller|less)\b(?!\s+than)', re.I), 'same'),
     ('R5_which_bad', re.compile(r'\b' + OPT + r'\b' + NO_OPT + r'{0,160}?,?\s+which\s+is\s+' + ADV + r'(?:higher|larger|greater|worse)\b(?!\s+than)', re.I), 'other'),

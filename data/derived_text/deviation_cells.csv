@@ -1,8 +1,7 @@
 cell,game,mode,model,deviation,n_decisions,reason,share
-cv_calculator_deepseek_dev_active,cv,calculator,DeepSeek,active where the classic rule is quiet,1225,Follows its own calculation,0.95673
+cv_calculator_deepseek_dev_active,cv,calculator,DeepSeek,active where the classic rule is quiet,1225,Follows its own calculation,0.96163
 cv_calculator_deepseek_dev_active,cv,calculator,DeepSeek,active where the classic rule is quiet,1225,Misreads or miscalculates payoffs,0.02939
 cv_calculator_deepseek_dev_active,cv,calculator,DeepSeek,active where the classic rule is quiet,1225,Other or unclassified,0.00898
-cv_calculator_deepseek_dev_active,cv,calculator,DeepSeek,active where the classic rule is quiet,1225,Says the other option is better,0.0049
 cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Says the other option is better,0.68118
 cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Misreads or miscalculates payoffs,0.21791
 cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Follows its own calculation,0.09768

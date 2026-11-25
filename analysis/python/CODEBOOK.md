@@ -45,10 +45,10 @@ state their conclusion last.
 
 | Rule | Pattern (case-insensitive) | Preference |
 |---|---|---|
-| R1 | choice verb + option: "choose / pick / select / go with / keep / switch to / so / therefore ... [the lower-disutility option] X" | X |
+| R1 | choice verb + option: "choose / pick / select / go with / keep / switch to / so / therefore ... [the lower-disutility option] X". A choice verb right after "than" or "while" ("lower than choosing A") is not a choice (fix, Nov 25 2026). | X |
 | R2 | positive verdict: "X is / remains / gives ... [much / strictly] better / lower / preferable / optimal / zero"; "X minimizes"; "making X the better choice"; "lower disutility for X" | X |
 | R3 | negative verdict: "X is / has [much] higher / worse / larger"; "X is not advantageous" | the other option |
-| R4 | comparison within one sentence: "X ... lower / better than Y" or "X ... higher / worse than Y" | X, or Y |
+| R4 | comparison within one sentence: "X ... lower / better [disutility] than [choosing] Y" or "X ... higher / worse than Y" | X, or Y |
 | R5 | trailing verdict on the most recent option: "X gives 0.04, which is lower / higher" | X, or the other option |
 | R6 | "X is the [safer / better / intended] choice"; "X appears preferable" | X |
 | R7 | "the [safer immediate] choice is X" | X |
