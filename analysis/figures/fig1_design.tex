@@ -36,7 +36,7 @@
 \node[head] at (0, 0) {A\quad Games (payoffs and mechanics fixed)};
 \gamebox{pd}{-0.4}{Spatial prisoner's dilemma}{Validation\,|\,Nowak \& May (1992)}{$20\times20$ lattice, 8 neighbors\\Cooperate or defect each round\\T=5, R=3, P=1, S=0}
 \gamebox{cv}{-2.75}{Civil violence (Epstein Model I)}{Validation\,|\,Epstein (2002)}{$40\times40$ torus, citizens and police\\Stay quiet or become active\\Legitimacy 0.82, vision 7}
-\gamebox{ic}{-5.1}{Crisis bargaining (new)}{Out of sample\,|\,unpublished}{Signal strength to 8 neighbors\\Demand, or accept a share\\War if demand $>$ threshold}
+\gamebox{ic}{-5.1}{Crisis bargaining (new)}{New task\,|\,unpublished}{Signal strength to 8 neighbors\\Demand, or accept a share\\War if demand $>$ threshold}
 
 % mini graphics, right side of each game box (x 4.3--5.75)
 \begin{scope}[shift={(4.3,-0.75)}]
@@ -67,11 +67,11 @@
 \node[box, draw=rule, line width=0.6pt, text width=3.75cm, anchor=north west] (rb) at (6.8, -0.4)
   {\textbf{\textcolor{rule}{Rule-based}} (benchmark)\\[2pt]
    \scriptsize Hand-coded rule from each model\\[2pt]
-   \scriptsize PD\enspace copy best-scoring neighbor\\
+   \scriptsize PD\enspace copy best of self and 8 neighbors\\
    \scriptsize CV\enspace activate if $G-N>0.1$\\
    \scriptsize Crisis\enspace bargaining rule};
 \node[box, fill=panel, text width=3.75cm, anchor=north west] (llm) at (6.8, -3.05)
-  {\textbf{LLM agents}\enspace\scriptsize temperature 0\\[4pt]
+  {\textbf{LLM agents}\\[4pt]
    \tikz[baseline=-0.6ex]\fill[gpt] (0,0) circle (3.2pt);\; GPT-5.4-mini\\[3pt]
    \tikz[baseline=-0.6ex]\fill[ds] (0,0) circle (3.2pt);\; DeepSeek-V4-Flash\\[4pt]
    \scriptsize Same state information as the rule-based agent, given as text};

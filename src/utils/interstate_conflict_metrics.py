@@ -89,7 +89,7 @@ def demand_calibration_gap(dyads: list, E_war_cost: float) -> Optional[float]:
             continue
         perceived_cap_opp = SIGNAL_TO_CAP.get(opp_signal, 0.5)
         benchmark_raw = (
-            1.0 - cap_self / (cap_self + perceived_cap_opp) + E_war_cost
+            cap_self / (cap_self + perceived_cap_opp) + E_war_cost
         )
         benchmark = _round_to_bucket(benchmark_raw)
         gaps.append(float(actual) - benchmark)
