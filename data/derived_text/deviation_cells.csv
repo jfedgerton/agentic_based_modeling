@@ -6,17 +6,17 @@ cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is 
 cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Misreads or miscalculates payoffs,0.21791
 cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Follows its own calculation,0.09768
 cv_calculator_gpt_dev_active,cv,calculator,GPT,active where the classic rule is quiet,13042,Other or unclassified,0.00322
-cv_reasoner_deepseek_dev_quiet,cv,reasoner,DeepSeek,quiet where the classic rule is active,4714,"Arrest risk, no fellow protesters",0.99745
-cv_reasoner_deepseek_dev_quiet,cv,reasoner,DeepSeek,quiet where the classic rule is active,4714,"Arrest risk, other reasons",0.00233
+cv_reasoner_deepseek_dev_quiet,cv,reasoner,DeepSeek,quiet where the classic rule is active,4714,"Arrest risk, no fellow protesters",0.99809
+cv_reasoner_deepseek_dev_quiet,cv,reasoner,DeepSeek,quiet where the classic rule is active,4714,"Arrest risk, other reasons",0.0017
 cv_reasoner_deepseek_dev_quiet,cv,reasoner,DeepSeek,quiet where the classic rule is active,4714,"No fellow protesters, no arrest risk",0.00021
-cv_reasoner_gpt_dev_quiet,cv,reasoner,GPT,quiet where the classic rule is active,4698,"Arrest risk, no fellow protesters",0.99723
-cv_reasoner_gpt_dev_quiet,cv,reasoner,GPT,quiet where the classic rule is active,4698,"Arrest risk, other reasons",0.00277
-cv_roleplayer_deepseek_dev_quiet,cv,roleplayer,DeepSeek,quiet where the classic rule is active,4739,"Arrest risk, no fellow protesters",0.99705
-cv_roleplayer_deepseek_dev_quiet,cv,roleplayer,DeepSeek,quiet where the classic rule is active,4739,"Arrest risk, other reasons",0.00274
+cv_reasoner_gpt_dev_quiet,cv,reasoner,GPT,quiet where the classic rule is active,4698,"Arrest risk, no fellow protesters",0.99915
+cv_reasoner_gpt_dev_quiet,cv,reasoner,GPT,quiet where the classic rule is active,4698,"Arrest risk, other reasons",0.00085
+cv_roleplayer_deepseek_dev_quiet,cv,roleplayer,DeepSeek,quiet where the classic rule is active,4739,"Arrest risk, no fellow protesters",0.99916
+cv_roleplayer_deepseek_dev_quiet,cv,roleplayer,DeepSeek,quiet where the classic rule is active,4739,"Arrest risk, other reasons",0.00063
 cv_roleplayer_deepseek_dev_quiet,cv,roleplayer,DeepSeek,quiet where the classic rule is active,4739,"No fellow protesters, no arrest risk",0.00021
-cv_roleplayer_gpt_dev_quiet,cv,roleplayer,GPT,quiet where the classic rule is active,3873,"Arrest risk, no fellow protesters",0.97573
-cv_roleplayer_gpt_dev_quiet,cv,roleplayer,GPT,quiet where the classic rule is active,3873,"Arrest risk, other reasons",0.01936
+cv_roleplayer_gpt_dev_quiet,cv,roleplayer,GPT,quiet where the classic rule is active,3873,"Arrest risk, no fellow protesters",0.99148
 cv_roleplayer_gpt_dev_quiet,cv,roleplayer,GPT,quiet where the classic rule is active,3873,"No fellow protesters, no arrest risk",0.00491
+cv_roleplayer_gpt_dev_quiet,cv,roleplayer,GPT,quiet where the classic rule is active,3873,"Arrest risk, other reasons",0.00361
 pd_calculator_gpt_cooperates,pd,calculator,GPT,cooperates where the classic rule defects,26022,Says the other option is better,0.91822
 pd_calculator_gpt_cooperates,pd,calculator,GPT,cooperates where the classic rule defects,26022,Coordination,0.04984
 pd_calculator_gpt_cooperates,pd,calculator,GPT,cooperates where the classic rule defects,26022,Misreads or miscalculates payoffs,0.0264

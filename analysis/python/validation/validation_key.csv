@@ -10,12 +10,12 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 9,T1,80325,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 10,T1,72249,GPT,calculator,ACTIVE,A,R6_choice_noun,Says the other option is better,1
 11,T1,77978,DeepSeek,calculator,ACTIVE,B,R4_than,Follows its own calculation,1
-12,T2,98412,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+12,T2,98412,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 13,T1,77602,GPT,calculator,ACTIVE,B,R2_good,Misreads or miscalculates payoffs,1
 14,T1,70407,GPT,calculator,ACTIVE,B,R6_choice_noun,Misreads or miscalculates payoffs,1
 15,T1,75590,GPT,calculator,ACTIVE,A,R7_noun_is,Says the other option is better,1
-16,T2,96386,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
-17,T2,91859,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+16,T2,96386,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
+17,T2,91859,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 18,T1,73740,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 19,T1,77789,DeepSeek,calculator,ACTIVE,B,R4_than,Follows its own calculation,1
 20,T1,72189,GPT,calculator,ACTIVE,,none,Other or unclassified,1
@@ -25,10 +25,10 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 24,T1,71054,GPT,calculator,ACTIVE,B,R6_preferable,Misreads or miscalculates payoffs,1
 25,T2,92066,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
 26,T2,94516,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
-27,T2,92153,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+27,T2,92153,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 28,T1,78663,GPT,calculator,ACTIVE,B,R6_choice_noun,Misreads or miscalculates payoffs,1
 29,T2,91187,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
-30,T2,92020,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+30,T2,92020,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 31,T1,75123,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 32,T1,68221,GPT,calculator,ACTIVE,B,R2_good,Misreads or miscalculates payoffs,1
 33,T2,98519,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
@@ -48,20 +48,20 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 47,T1,77914,DeepSeek,calculator,ACTIVE,,none,Other or unclassified,1
 48,T1,76199,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 49,T2,94959,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
-50,T2,98242,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+50,T2,98242,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 51,T1,80340,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 52,T2,91288,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 53,T1,79497,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 54,T1,74657,DeepSeek,calculator,ACTIVE,,none,Other or unclassified,1
 55,T1,76424,GPT,calculator,ACTIVE,A,R6_choice_noun,Says the other option is better,1
-56,T2,98208,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+56,T2,98208,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 57,T1,78886,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 58,T2,88856,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 59,T2,90771,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 60,T2,92506,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
 61,T1,72941,GPT,calculator,ACTIVE,A,R7_noun_is,Says the other option is better,1
 62,T1,66795,GPT,calculator,ACTIVE,B,R6_choice_noun,Misreads or miscalculates payoffs,1
-63,T2,87976,GPT,reasoner,QUIET,,Q_features,"Arrest risk, other reasons",1
+63,T2,87976,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 64,T1,74983,DeepSeek,calculator,ACTIVE,B,R6_choice_noun,Follows its own calculation,1
 65,T1,73925,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 66,T1,74028,GPT,calculator,ACTIVE,B,R2_good,Misreads or miscalculates payoffs,1
@@ -77,7 +77,7 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 76,T1,69711,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 77,T1,67012,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 78,T1,76429,GPT,calculator,ACTIVE,,none,Other or unclassified,1
-79,T2,89918,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, other reasons",1
+79,T2,89918,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 80,T1,68210,GPT,calculator,ACTIVE,B,R6_choice_noun,Follows its own calculation,1
 81,T1,70543,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 82,T1,78878,GPT,calculator,ACTIVE,,none,Other or unclassified,1
@@ -89,34 +89,34 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 88,T1,78385,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 89,T1,71959,DeepSeek,calculator,ACTIVE,B,R4_than,Follows its own calculation,1
 90,T2,93572,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
-91,T2,93264,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+91,T2,93264,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 92,T1,79423,GPT,calculator,ACTIVE,B,R1_choice,Misreads or miscalculates payoffs,1
 93,T1,66500,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 94,T2,96319,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
-95,T2,92781,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+95,T2,92781,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 96,T1,78539,GPT,calculator,ACTIVE,B,R2_good,Misreads or miscalculates payoffs,1
 97,T1,80488,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
 98,T1,68079,GPT,calculator,ACTIVE,B,R1_choice,Misreads or miscalculates payoffs,1
 99,T1,80186,GPT,calculator,ACTIVE,,none,Other or unclassified,1
-100,T2,85096,GPT,reasoner,QUIET,,Q_features,"Arrest risk, other reasons",1
+100,T2,85096,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 101,T1,74748,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 102,T2,95083,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
 103,T1,78502,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
-104,T2,98241,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
-105,T2,89099,GPT,reasoner,QUIET,,Q_features,"Arrest risk, other reasons",1
+104,T2,98241,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
+105,T2,89099,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 106,T2,97938,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 107,T2,91283,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
-108,T2,91857,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+108,T2,91857,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 109,T2,91595,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
 110,T1,69431,GPT,calculator,ACTIVE,B,R6_choice_noun,Follows its own calculation,1
 111,T1,77776,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
-112,T2,90077,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+112,T2,90077,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 113,T1,72516,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 114,T2,82704,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 115,T1,66454,DeepSeek,calculator,ACTIVE,B,R4_than,Follows its own calculation,1
 116,T1,73771,GPT,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 117,T2,97414,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
-118,T2,92778,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+118,T2,92778,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 119,T1,75359,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 120,T2,93394,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 121,T1,77761,DeepSeek,calculator,ACTIVE,B,R1_choice,Follows its own calculation,1
@@ -143,16 +143,16 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 142,T1,75089,DeepSeek,calculator,ACTIVE,B,R2_min,Follows its own calculation,1
 143,T1,74660,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 144,T1,70783,GPT,calculator,ACTIVE,,none,Other or unclassified,1
-145,T2,96054,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+145,T2,96054,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 146,T1,69368,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 147,T1,78087,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 148,T1,66386,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 149,T1,79553,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 150,T1,77879,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
-151,T2,95087,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+151,T2,95087,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 152,T2,98176,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
-153,T2,96412,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
-154,T2,80776,GPT,reasoner,QUIET,,Q_features,"Arrest risk, other reasons",1
+153,T2,96412,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
+154,T2,80776,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 155,T1,73550,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 156,T1,77265,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 157,T1,66389,DeepSeek,calculator,ACTIVE,B,R1_choice,Follows its own calculation,1
@@ -180,7 +180,7 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 179,T2,81251,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 180,T1,74909,DeepSeek,calculator,ACTIVE,B,R2_min,Follows its own calculation,1
 181,T1,68268,GPT,calculator,ACTIVE,B,R6_choice_noun,Misreads or miscalculates payoffs,1
-182,T2,96583,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+182,T2,96583,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 183,T1,79163,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 184,T1,67550,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 185,T1,68504,GPT,calculator,ACTIVE,B,R2_good,Misreads or miscalculates payoffs,1
@@ -188,39 +188,39 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 187,T1,80437,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
 188,T1,66503,DeepSeek,calculator,ACTIVE,,none,Other or unclassified,1
 189,T1,78978,GPT,calculator,ACTIVE,B,R6_choice_noun,Misreads or miscalculates payoffs,1
-190,T2,96475,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+190,T2,96475,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 191,T1,75855,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
 192,T2,92270,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 193,T1,78328,GPT,calculator,ACTIVE,B,R4_than,Misreads or miscalculates payoffs,1
 194,T2,91886,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
 195,T1,75232,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
-196,T2,91052,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+196,T2,91052,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 197,T1,69910,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 198,T2,84620,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
-199,T2,95311,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+199,T2,95311,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 200,T1,70803,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 201,T1,74830,DeepSeek,calculator,ACTIVE,B,R4_than,Follows its own calculation,1
 202,T1,76097,GPT,calculator,ACTIVE,A,R6_choice_noun,Says the other option is better,1
 203,T1,72195,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 204,T2,96508,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
 205,T1,73807,GPT,calculator,ACTIVE,,none,Other or unclassified,1
-206,T2,96294,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
-207,T2,87132,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, other reasons",1
-208,T2,94766,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
-209,T2,85102,GPT,reasoner,QUIET,,Q_features,"Arrest risk, other reasons",1
+206,T2,96294,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
+207,T2,87132,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
+208,T2,94766,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
+209,T2,85102,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 210,T1,75188,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
-211,T2,91599,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+211,T2,91599,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 212,T1,70151,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 213,T1,74681,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 214,T2,95294,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 215,T1,79093,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 216,T1,66417,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 217,T1,77960,DeepSeek,calculator,ACTIVE,B,R6_choice_noun,Follows its own calculation,1
-218,T2,85124,GPT,reasoner,QUIET,,Q_features,"Arrest risk, other reasons",1
+218,T2,85124,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 219,T1,75042,DeepSeek,calculator,ACTIVE,B,R6_choice_noun,Follows its own calculation,1
 220,T1,74992,DeepSeek,calculator,ACTIVE,,none,Other or unclassified,1
 221,T1,74851,DeepSeek,calculator,ACTIVE,B,R5_which_good,Follows its own calculation,1
-222,T2,91789,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+222,T2,91789,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 223,T1,66520,DeepSeek,calculator,ACTIVE,B,R4_than,Follows its own calculation,1
 224,T1,68772,GPT,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 225,T1,66353,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
@@ -228,12 +228,12 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 227,T1,67310,GPT,calculator,ACTIVE,B,R1_choice,Misreads or miscalculates payoffs,1
 228,T1,66749,GPT,calculator,ACTIVE,A,R6_choice_noun,Says the other option is better,1
 229,T1,67061,GPT,calculator,ACTIVE,,none,Other or unclassified,1
-230,T2,95004,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+230,T2,95004,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 231,T1,67575,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
 232,T2,92372,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 233,T1,77954,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
-234,T2,98022,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
-235,T2,94821,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+234,T2,98022,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
+235,T2,94821,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 236,T1,78989,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 237,T1,79178,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 238,T1,70709,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
@@ -241,7 +241,7 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 240,T1,70213,GPT,calculator,ACTIVE,B,R6_choice_noun,Misreads or miscalculates payoffs,1
 241,T1,74903,DeepSeek,calculator,ACTIVE,B,R6_choice_noun,Follows its own calculation,1
 242,T2,86205,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
-243,T2,92403,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+243,T2,92403,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 244,T1,75937,GPT,calculator,ACTIVE,B,R1_choice,Misreads or miscalculates payoffs,1
 245,T1,77868,DeepSeek,calculator,ACTIVE,B,R6_choice_noun,Follows its own calculation,1
 246,T1,79885,GPT,calculator,ACTIVE,,none,Other or unclassified,1
@@ -249,10 +249,10 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 248,T1,78637,GPT,calculator,ACTIVE,B,R4_than,Misreads or miscalculates payoffs,1
 249,T1,76615,GPT,calculator,ACTIVE,B,R1_choice,Misreads or miscalculates payoffs,1
 250,T1,76337,GPT,calculator,ACTIVE,B,R1_choice,Misreads or miscalculates payoffs,1
-251,T2,97303,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
-252,T2,96373,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+251,T2,97303,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
+252,T2,96373,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 253,T2,84056,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
-254,T2,91901,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+254,T2,91901,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 255,T2,83694,GPT,reasoner,QUIET,,Q_features,"Arrest risk, other reasons",1
 256,T1,71072,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
 257,T2,89860,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
@@ -264,7 +264,7 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 263,T1,74889,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 264,T1,79386,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
 265,T1,76512,GPT,calculator,ACTIVE,A,R2_good,Says the other option is better,1
-266,T2,92361,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+266,T2,92361,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 267,T1,66418,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 268,T1,77951,DeepSeek,calculator,ACTIVE,B,R4_than,Misreads or miscalculates payoffs,1
 269,T2,91801,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
@@ -276,7 +276,7 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 275,T1,74852,DeepSeek,calculator,ACTIVE,B,R2_min,Follows its own calculation,1
 276,T1,72799,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
 277,T1,77440,GPT,calculator,ACTIVE,,none,Other or unclassified,1
-278,T2,91105,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+278,T2,91105,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 279,T1,74753,DeepSeek,calculator,ACTIVE,B,R2_min,Follows its own calculation,1
 280,T1,68652,GPT,calculator,ACTIVE,B,R2_good,Misreads or miscalculates payoffs,1
 281,T2,88818,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
@@ -284,7 +284,7 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 283,T1,74886,DeepSeek,calculator,ACTIVE,B,R1_choice,Follows its own calculation,1
 284,T1,78367,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
 285,T1,73979,GPT,calculator,ACTIVE,,none,Other or unclassified,1
-286,T2,90261,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+286,T2,90261,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 287,T1,80041,GPT,calculator,ACTIVE,A,R1_choice,Says the other option is better,1
 288,T2,98169,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 289,T2,82530,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
@@ -300,29 +300,29 @@ item,task,row_id,model,mode,action,stated_pref,rule,label,decisions
 299,T1,74707,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 300,T1,70286,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 301,T1,67184,GPT,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
-302,T2,93466,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+302,T2,93466,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 303,T2,87974,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 304,T2,81636,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 305,T1,78953,GPT,calculator,ACTIVE,B,R2_good,Misreads or miscalculates payoffs,1
 306,T1,72022,GPT,calculator,ACTIVE,,none,Other or unclassified,1
-307,T2,98354,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
-308,T2,96894,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+307,T2,98354,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
+308,T2,96894,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 309,T2,92590,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
 310,T1,67433,GPT,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 311,T2,96627,GPT,roleplayer,QUIET,,Q_features,"No fellow protesters, no arrest risk",1
 312,T1,76784,GPT,calculator,ACTIVE,B,R1_choice,Misreads or miscalculates payoffs,1
 313,T1,79334,GPT,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
-314,T2,90834,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+314,T2,90834,DeepSeek,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 315,T2,89516,DeepSeek,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 316,T1,66335,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 317,T1,74561,GPT,calculator,ACTIVE,B,R2_good,Misreads or miscalculates payoffs,1
 318,T1,77676,GPT,calculator,ACTIVE,,none,Other or unclassified,1
-319,T2,96273,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+319,T2,96273,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 320,T1,66313,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 321,T1,76288,GPT,calculator,ACTIVE,,none,Other or unclassified,1
 322,T1,66490,DeepSeek,calculator,ACTIVE,B,R2_good,Follows its own calculation,1
 323,T1,67087,GPT,calculator,ACTIVE,B,R5_which_good,Follows its own calculation,1
-324,T2,92223,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, other reasons",1
+324,T2,92223,GPT,roleplayer,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 325,T2,80945,GPT,reasoner,QUIET,,Q_features,"Arrest risk, no fellow protesters",1
 326,T1,79869,GPT,calculator,ACTIVE,B,R6_choice_noun,Misreads or miscalculates payoffs,1
 327,T1,75114,DeepSeek,calculator,ACTIVE,,none,Other or unclassified,1

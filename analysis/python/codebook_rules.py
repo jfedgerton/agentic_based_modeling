@@ -69,22 +69,22 @@ def cv_calc_pref(text):
 # RISK: the rationale cites arrest, detention, jail, police or enforcement as a cost.
 RISK = re.compile(r'\b(?:arrest\w*|detain\w*|detention|jail\w*|imprison\w*|police\w*|policed|policing|enforcement|enforcers?|cops?|crackdown|repression|danger\w*|riskier|risky|risks?(?!\s*-?\s*(?:aversion|averse|tolerance|tolerant|appetite)))\b', re.I)
 # ALONE: the rationale cites the absence or weakness of fellow protesters / active agents.
-_Q = r'(?:fellow |nearby |visible |visibly |other |current |ongoing |active |local |existing |concurrent |apparent |observed |clear |an |a )*'
+_Q = r'(?:fellow |nearby |neighbou?ring |visible |visibly |other |current |ongoing |active |local |existing |concurrent |apparent |observed |clear |supporting |immediate |street |an |a )*'
 _W = (r'(?:activists?|protesters?|protests?|protesting|demonstrators?|demonstrations?|active agents?|agents? (?:are |is )?active|'
-      r'crowds?|allies|support|supporters|momentum|protest (?:activity|wave|movement|presence|support|momentum|turnout)|collective action|'
-      r'participants?|co-participants?|co-actors?|peers?|neighbou?rs|turnout|mobili[sz]ation|cover|active|protest)')
+      r'crowds?|allies|support|supporters|momentum|protest (?:activity|wave|movement|presence|support|momentum|turnout)|collective (?:action|activity|activation)|'
+      r'participants?|co-participants?|co-actors?|co-?protesters?|co-?actives?|peers?|neighbou?rs|turnout|mobili[sz]ation|cover|active|protest)')
 ALONE = re.compile(
     r'\bno ' + _Q + _W + r'|\bnone of (?:my |the )?neighbou?rs\b|\bzero ' + _Q + _W +
     r'|\b0 ' + _Q + _W + r'|\bno one (?:nearby |around |else )?(?:is |currently |already )*(?:active|protesting|demonstrating|joining)\b'
     r'|\bno one (?:around |nearby )?is (?:visibly |currently )*(?:protesting|active)\b|\bonly (?:one|1|two|2|a few) (?:protesters?|active)\b'
-    r'|\b(?:participation|turnout) (?:nearby |locally )?is (?:zero|low|minimal)\b|\bweakly supported\b'
+    r'|\b(?:participation|turnout) (?:nearby |locally )?is (?:very )?(?:zero|low|minimal)\b|\bweakly supported\b'
     r'|\bnobody (?:nearby |else )?(?:is )?(?:active|protesting|joining)\b|\bwithout (?:a |any )?' + _Q + _W +
     r'|\b(?:absence|lack) of (?:any |a |visible |nearby |active )*' + _Q + _W + r'|\balone\b|\bisolated\b'
     r'|\b' + _W + r'[^.]{0,40}\b(?:absent|weak|nonexistent|missing|not visible|lacking|limited|sparse)\b'
     r'|\bmost (?:neighbou?rs|people|others) (?:are )?(?:staying home|quiet)\b|\bmany neighbou?rs staying home\b'
     r'|\bfew (?:if any )?(?:protesters|active)\b'
-    r'|\b(?:low|zero|very low|little|limited|weak|minimal) (?:current |local |visible |immediate )*(?:protest )?(?:turnout|presence|momentum|activity|mobili[sz]ation|participation|collective \w+)\b'
-    r'|\bturnout (?:is |remains )?(?:currently )?(?:zero|low|minimal)\b|\b(?:inactive|not (?:visibly )?growing|no (?:protest|demonstration) (?:is )?underway)\b', re.I)
+    r'|\b(?:low|zero|very low|little|limited|weak|minimal) (?:current |local |visible |immediate |expected )*(?:protest )?(?:turnout|presence|momentum|activity|mobili[sz]ation|participation|collective \w+)\b'
+    r'|\bturnout (?:is |remains )?(?:currently )?(?:zero|low|minimal)\b|\b(?:turnout|protest presence|protest activity|protest environment|protest crowd|protest momentum|the (?:current |immediate |local )?protest)\b[^.;]{0,30}?\b(?:appears|looks|seems|is|remains)\s+(?:very\s+|currently\s+|effectively\s+|still\s+)*(?:zero|low|minimal|thin|weak|absent|not (?:visibly )?active)\b|\bno one (?:nearby |around )?is (?:visibly |actively |currently )+(?:joining|protesting|demonstrating|active)\b|\bsolitary\b|\blone protesters?\b|\bthe only protester\b|\bempty protest\b|\blittle (?:local |immediate )*(?:protest )?support\b|\blittle support from others\b|\bno sign of (?:a |any )?(?:growing )?(?:protest )?(?:crowd|protest|momentum|mobili[sz]ation)\b|\bnot (?:appear to be |seem to be )?gathering\b|\blacks? (?:any )?' + _Q + _W + r'|\blow level of (?:visible )?protest\b|\b(?:inactive|not (?:visibly )?growing|no (?:protest|demonstration) (?:is )?underway)\b', re.I)
 
 def cv_quiet_reason(text):
     """Return one of the four quiet-reason categories from the two features."""

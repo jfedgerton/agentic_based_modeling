@@ -66,7 +66,7 @@ Two binary features are coded independently, then crossed into the four CV categ
 | Feature | Present when the rationale ... |
 |---|---|
 | Arrest risk | names arrest, detention, jail, police, enforcement, danger, or risk (but not "risk aversion" or "risk tolerance") as a cost |
-| No fellow protesters | says no / zero / few / only one fellow protesters, active agents, neighbors, peers, crowd, support or momentum; or that turnout or protest activity is absent, low, weak or inactive; or that the agent would act alone |
+| No fellow protesters | says no / zero / few / only one fellow protesters, active agents, neighbors, peers, crowd, support or momentum; or that turnout or protest activity is absent, low, weak or inactive; or that the agent would act alone (patterns broadened Nov 25 2026 after validation coding, e.g. "turnout appears very low", "no coprotesters", "solitary protest", "no neighboring agents are ACTIVE"; 83 decisions moved from arrest risk alone to both) |
 
 ### Prisoner's dilemma (human census, `pd_rationale_codes.csv`)
 
