@@ -1,19 +1,19 @@
 mode,reason,n,share,n_overstating,n_valid_signals
-calculator,Misreads own strength,3018,0.24958650347337083,12092,19284
-calculator,Misreads the rules,4068,0.33642077406549786,12092,19284
-calculator,Bluffs openly,1,8.269930532583527e-05,12092,19284
-calculator,Deterrence or bargaining leverage,1634,0.13513066490241482,12092,19284
-calculator,Keeps past signal or payoff,1308,0.10817069136619252,12092,19284
-calculator,Other or unclassified,2063,0.17060866688719814,12092,19284
-reasoner,Misreads own strength,51,0.005218459019748286,9773,19847
-reasoner,Misreads the rules,21,0.002148777243425765,9773,19847
-reasoner,Bluffs openly,271,0.027729458712780108,9773,19847
-reasoner,Deterrence or bargaining leverage,9319,0.9535454824516525,9773,19847
-reasoner,Keeps past signal or payoff,70,0.0071625908114192165,9773,19847
-reasoner,Other or unclassified,41,0.0041952317609741125,9773,19847
-roleplayer,Misreads own strength,213,0.014628116200810384,14561,19625
-roleplayer,Misreads the rules,23,0.0015795618432799946,14561,19625
-roleplayer,Bluffs openly,756,0.0519195110225946,14561,19625
-roleplayer,Deterrence or bargaining leverage,13545,0.9302245724881533,14561,19625
-roleplayer,Keeps past signal or payoff,7,0.00048073621317217224,14561,19625
-roleplayer,Other or unclassified,17,0.0011675022319895612,14561,19625
+calculator,Misreads own strength,2698,0.22312272576910355,12092,19284
+calculator,Misreads the rules,3227,0.2668706582864704,12092,19284
+calculator,Bluffs openly,0,0.0,12092,19284
+calculator,Deterrence or bargaining leverage,2309,0.19095269599735362,12092,19284
+calculator,Keeps past signal or payoff,1028,0.08501488587495865,12092,19284
+calculator,Other or unclassified,2830,0.2340390340721138,12092,19284
+reasoner,Misreads own strength,39,0.003990586309219278,9773,19847
+reasoner,Misreads the rules,4,0.0004092909035096695,9773,19847
+reasoner,Bluffs openly,218,0.02230635424127699,9773,19847
+reasoner,Deterrence or bargaining leverage,9435,0.9654149186534329,9773,19847
+reasoner,Keeps past signal or payoff,52,0.005320781745625704,9773,19847
+reasoner,Other or unclassified,25,0.0025580681469354345,9773,19847
+roleplayer,Misreads own strength,166,0.011400315912368656,14561,19625
+roleplayer,Misreads the rules,4,0.0002747064075269556,14561,19625
+roleplayer,Bluffs openly,605,0.04154934413845203,14561,19625
+roleplayer,Deterrence or bargaining leverage,13781,0.9464322505322437,14561,19625
+roleplayer,Keeps past signal or payoff,1,6.86766018817389e-05,14561,19625
+roleplayer,Other or unclassified,4,0.0002747064075269556,14561,19625

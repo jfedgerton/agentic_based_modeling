@@ -102,6 +102,14 @@ Categories, first match wins (rules R1-R5 in `05_ic_signal_reasons.py`):
 | R5 | Keeps past signal or payoff | cites continuing, maintaining or repeating its previous signal, consistency, or a good previous payoff |
 | R6 | Other or unclassified | none of the above |
 
+Revisions after validation coding (Nov 25 2026). R1 no longer counts hedged "moderately high" / "reasonably strong", but counts
+"relatively higher", and ignores "neighbors who believe my capability is high". R2 no longer counts "matching my prior signal"
+or "better matching my actual strength"; it now counts "matched with stronger roles" and "signal to assignment". R3 counts
+"maintaining ambiguity" and "worth the bluffing risk", and ignores warnings such as "safer than bluffing", "should not bluff harder"
+and "unless there is a penalty for overstatement". R4 adds "avoids looking/advertising weakness", "tests of weakness",
+"unfavorable/hard demands", "tougher offers", "better bargains", "perceived strength", "commitment", "avoid inviting demands".
+R5 no longer counts "the most consistent choice" (consistency of reasoning). 2,568 of 36,426 signals changed label.
+
 Precedence puts the two errors first (a rationale that misreads the game is coded as a misreading even when it also
 cites deterrence), then an explicit bluff, then the strategic reason, then habit.
 

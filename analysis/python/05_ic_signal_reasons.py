@@ -30,11 +30,11 @@ STEPS = range(51, 101)
 
 # ---- Codebook v1, T4: reasons for overstating strength (first match wins) ------------------------------------------
 STRENGTH_WORD = r"(?:high|strong|above[- ]average)"  # vague words (decent, solid, good) are not coded as misreadings
-OWN = r"(?:value_a|capability|military capability|strength|military strength|position)"
-MOD = r"(?:relatively |fairly |quite |reasonably |still |moderately )?"
+OWN = r"(?:value_a|capability|military capability|strength|military strength)"
+MOD = r"(?:relatively |fairly |quite |still )?"  # "moderately"/"reasonably" hedges not counted (validation coding, Nov 25 2026)
 R1_OWN_HIGH = re.compile(  # applies only when capability < 0.5; must describe the agent's OWN capability
-    r"(?:\b(?:my|our|your)|\bwith(?: a| an)?|\bgiven(?: a| an| my| our| your)?) (?:true )?" + MOD + STRENGTH_WORD + r" (?:true )?" + OWN
-    + r"|\b(?:my|our|your) (?:true )?" + OWN + r"(?: of [0-9.]+)? (?:is|remains) " + MOD + r"(?:" + STRENGTH_WORD + r"|(?:slightly |well )?above (?:average|the midpoint|0\.5))"
+    r"\b(?:my|our|your) relatively higher (?:true )?" + OWN + r"|(?:(?<!believe )(?<!think )\b(?:my|our|your)|\bwith(?: a| an)?|\bgiven(?: a| an| my| our| your)?) (?:true )?" + MOD + STRENGTH_WORD + r" (?:true )?" + OWN
+    + r"|(?<!believe )(?<!think )\b(?:my|our|your) (?:true )?" + OWN + r"(?: of [0-9.]+)? (?:is|remains) " + MOD + r"(?:" + STRENGTH_WORD + r"|(?:slightly |well )?above (?:average|the midpoint|0\.5))"
     + r"|\b(?:with|given) (?:a |an )?" + OWN + r"(?: of [0-9.]+)? (?:slightly |well )?above (?:average|the midpoint|0\.5)"
     # bare forms: "value_a is relatively high", "value_a relatively high", "a relatively strong value_a" (not "a high value_a type")
     + r"|\bvalue_a (?:is |being )?" + MOD + STRENGTH_WORD
@@ -42,7 +42,8 @@ R1_OWN_HIGH = re.compile(  # applies only when capability < 0.5; must describe t
 R2_RULES = re.compile(
     r"role assignments?|(?:favorable|better|advantageous|future|preferred) (?:role )?assignments?|"
     r"assigned (?:the |a |to )?(?:more |higher|better|favorable|stronger|preferred|advantageous)|(?:favorable|better|safer|advantageous) "
-    r"(?:role|matching|match|partner)|matching|partner selection|be assigned|role_X partner|choose (?:you|me) as", re.I)
+    r"(?:role|matching(?! my)|match\b|partner)|(?:decent|favorable|better|stronger) matching(?! my)|matching/coordination|matching to favorable|"
+    r"matched(?: with|/| to)|signal to assignment|partner selection|be assigned|role_X partner|choose (?:you|me) as", re.I)
 R3_BLUFF = re.compile(
     r"bluff|overstat|overclaim|exaggerat|inflat|misleading|(?:true|actual|real) (?:strength|capability|capabilities|value_a) (?:is|are) "
     r"(?:not visible|hidden|private|unobserv|not observ)|(?:not|cannot be) (?:directly )?(?:visible|observ|seen|verified)|"
@@ -51,19 +52,29 @@ R3_BLUFF = re.compile(
 # A bluff word in a sentence that rejects or warns against bluffing ("avoid an empty bluff", "overstating risks war")
 # does not count; R3 needs a sentence that uses it without these cues.
 R3_REJECT = re.compile(r"\b(?:avoid\w*|without|rather than|instead of|could|would|risk\w*|unnecessar\w*|empty|"
-                       r"implausible|too|enough to|provok\w*|invit\w*)\b", re.I)
+                       r"implausible|too|enough to|provok\w*|invit\w*|"
+                       # added Nov 25 2026 after validation coding: comparisons and warnings ("safer than bluffing",
+                       # "should not bluff harder", "unless there is a penalty for overstatement", "identified as bluffing")
+                       r"(?:safer|better|worse|preferable) than|should not|shouldn't|penalty|expected|reduc\w*|identified as|exposed)\b", re.I)
 R4_DETER = re.compile(
-    r"deter|leverage|bargaining (?:position|power|terms|outcomes|posture|stance)|better (?:terms|settlements?|shares?|deals?|outcomes)|"
-    r"favorable (?:terms|settlements?|shares?|outcomes|treatment)|discourag|aggressive demands|(?:tougher|higher|excessive) demands|"
+    r"deter|leverag(?!\w* the probabilistic)|bargaining (?:position|power|terms|outcomes|posture|stance)|better (?:terms|settlements?|shares?|deals?|outcomes)|"
+    r"favorable (?:terms|settlements?|shares?|outcomes|treatment)|discourag|aggressive demands|(?:tougher|higher|excessive|hard|harder|exploitative) demands|reduc\w* (?:neighbors'? |their |exploitative )?demands|press harder|demand more|"
     r"invite (?:exploitation|tougher|higher|unfavorable|aggress)|project(?:ing|s)? (?:strength|resolve|firmness|power|confidence)|"
     r"resolve|credib|(?:look|appear|seem)(?:ing|s)? (?:weak|vulnerable|hesitant)|perceived as (?:a |the )?(?:strong|high|tough)|"
     r"exploit|push(?:ed)? around|concede|concessions|reputation|stronger (?:type|standing|posture|image)|"
-    r"(?:position|present)(?:s|ing)? (?:you|me|us|myself|yourself|ourselves) as (?:the |a )?(?:strong|high|stronger|tough)", re.I)
+    r"(?:position|present)(?:s|ing)? (?:you|me|us|myself|yourself|ourselves) as (?:the |a )?(?:strong|high|stronger|tough)|"
+    # added Nov 25 2026 after validation coding: phrasings the list above missed
+    r"(?:look|appear|seem)(?:ing|s)? (?:obviously |too |overly )?(?:weak|easy to pressure)|(?:advertis|reveal|signal|show)\w* weakness|"
+    r"tests? of weakness|perceived (?:weakness|strength)|appearance of strength|weakness of (?:a )?WEAK|downside of a weak signal|"
+    r"unfavorable (?:demands|terms)|pressed into|tougher offers|better bargains?|soften (?:neighbor |their )?demands|"
+    r"avoid\w* (?:inviting|provoking) (?:unnecessary |opportunistic |maximal |overly |more |hard )?(?:demands|pressure|challenges|aggression)|commitment|"
+    r"(?:preserve|improve)\w* (?:or improve )?(?:your|my) standing|support\w* bargaining|improv\w* (?:expected )?bargaining", re.I)
 R5_KEEP = re.compile(
     r"continu|maintain|keep(?:ing)? (?:the |my |our |a |this )?(?:same |strong |high |previous )?(?:signal|declaration|posture|stance)|"
-    r"consisten|already (?:been )?(?:signal|declar|established|using)|previous(?:ly)? (?:signal|declar|strong|S3)|prior (?:signal|declaration)|"
+    r"consistency|consistent (?:with (?:my |the )?(?:prior|previous|past|recent)|signal\b)|preserv\w* (?:a |the |my )?(?:high |strong )?signal|already (?:been )?(?:signal|declar|established|using)|previous(?:ly)? (?:signal|declar|strong|S3)|prior (?:signal|declaration)|"
     r"last (?:round|signal|declaration|choice)|repeat|stay(?:ing)? with|stick(?:ing)? with|payoff (?:was|has been|improved|is)|"
-    r"(?:good|strong|solid|positive|favorable|decent) (?:last[- ]round )?payoff", re.I)
+    r"(?:good|strong|solid|positive|favorable|decent) (?:last[- ]round |last )?payoff", re.I)
+R3_ACCEPT = re.compile(r"\b(?:maintain\w*|keep\w*|moderate|some) ambiguity\b|worth the bluff\w* risk", re.I)  # Nov 25 2026
 LABELS = ["Misreads own strength", "Misreads the rules", "Bluffs openly", "Deterrence or bargaining leverage",
           "Keeps past signal or payoff", "Other or unclassified"]
 
@@ -73,7 +84,7 @@ def label(text, cap):
         return LABELS[0], "R1"
     if R2_RULES.search(text):
         return LABELS[1], "R2"
-    if any(R3_BLUFF.search(sent) and not R3_REJECT.search(sent) for sent in re.split(r"(?<=[.!?;])\s+", text)):
+    if R3_ACCEPT.search(text) or any(R3_BLUFF.search(sent) and not R3_REJECT.search(sent) for sent in re.split(r"(?<=[.!?;])\s+", text)):
         return LABELS[2], "R3"
     if R4_DETER.search(text):
         return LABELS[3], "R4"
