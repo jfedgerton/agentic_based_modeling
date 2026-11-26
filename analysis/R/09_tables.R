@@ -54,7 +54,7 @@ write_tex(c(
   "\\cmidrule(lr){2-4} \\cmidrule(lr){5-7}",
   "Mode & Classic & GPT & DeepSeek & GPT $-$ classic & DeepSeek $-$ classic & GPT $-$ DeepSeek \\\\",
   "\\midrule", rows, "\\bottomrule", "\\end{tabular}",
-  "\\par\\smallskip\\footnotesize\\raggedright Note: with 5 seeds per arm the smallest attainable exact $p$ is $2/252 = 0.008$ (both tails). Seeds vary the environment only (temperature 0). Classic arm is identical across modes (it receives no prompt).",
+  "\\par\\smallskip\\footnotesize\\raggedright Note: with 5 seeds per arm the smallest attainable exact $p$ is $2/252 = 0.008$ (both tails). GPT was queried at its default temperature and DeepSeek at temperature 0; because responses were cached by prompt, seeds vary mainly the environment. Classic arm is identical across modes (it receives no prompt).",
   "\\end{table}"), "table2_provider_divergence.tex")
 
 # ---- ED Table 1: provider x framing interaction ------------------------------
@@ -104,7 +104,7 @@ for (arm in c("classic", "calculator", "reasoner", "roleplayer")) {
 }
 write_tex(c(
   "\\begin{table}[t]", "\\centering", "\\small",
-  "\\caption{Out-of-sample game (interstate crisis bargaining), one seed per arm. Behavioural outcomes are GPT only: every DeepSeek arm exceeds the 5\\% parse-failure gate, and failed decisions fall back to the classical rule, so its outcomes are not LLM behaviour.}",
+  "\\caption{Unpublished crisis-bargaining game, one seed per arm. Behavioral outcomes are GPT only. Every DeepSeek arm exceeds the 5\\% parse-failure threshold, and failed decisions fall back to the classic rule, so DeepSeek outcomes do not reflect LLM behavior.}",
   "\\label{tab:ed-ic}", "\\footnotesize", "\\setlength{\\tabcolsep}{4pt}",
   "\\begin{tabular}{lcccccc}", "\\toprule",
   " & War & Welfare & Bluff & Bluff & \\multicolumn{2}{c}{Parse failure} \\\\",

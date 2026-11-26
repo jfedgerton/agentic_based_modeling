@@ -200,8 +200,8 @@ run_index <- read_csv(file.path(OUT_DERIVED, "run_index.csv"), show_col_types = 
 pf <- run_index %>%
   filter(provider != "mock", batch %in% c("one_seed", "five_seed"), !excluded_duplicate) %>%  # one copy of each replayed run
   mutate(Agent = prov_lab(provider),
-         game_lab = recode(game, pd = "Prisoner's\ndilemma", cv = "Civil\nviolence", ic = "Interstate conflict\n(novel, out of sample)"),
-         game_lab = factor(game_lab, levels = c("Prisoner's\ndilemma", "Civil\nviolence", "Interstate conflict\n(novel, out of sample)")),
+         game_lab = recode(game, pd = "Prisoner's\ndilemma", cv = "Civil\nviolence", ic = "Crisis\nbargaining"),
+         game_lab = factor(game_lab, levels = c("Prisoner's\ndilemma", "Civil\nviolence", "Crisis\nbargaining")),
          pfr = pmax(parse_fail_rate, 1e-5))
 fig4a <- ggplot(pf, aes(game_lab, pfr, colour = Agent, shape = Agent)) +
   geom_hline(yintercept = PARSE_FAILURE_EXCLUSION_THRESHOLD, linetype = "dashed", colour = "grey40") +
