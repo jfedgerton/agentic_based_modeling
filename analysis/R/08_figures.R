@@ -22,7 +22,8 @@ SHP <- c("GPT (OpenAI)" = 16, "DeepSeek" = 17, "Classic (rule-based)" = 15)
 MODE_LAB <- c(calculator = "Calculator\n(formal payoffs)",
               reasoner   = "Reasoner\n(descriptive rules)",
               roleplayer = "Role-player\n(narrative scenario)")
-SQRT_BREAKS <- c(0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.4, 0.6, 0.8)
+SQRT_BREAKS <- c(0, 0.01, 0.1, 0.2, 0.4, 0.6, 0.8)  # 0.001 and 0.05 dropped: they overlapped neighbours on the sqrt axis
+SQRT_LABELS <- function(x) as.character(x)  # 0, 0.01, 0.1, ... without trailing zeros
 prov_lab <- function(p) recode(p, openai = "GPT (OpenAI)", deepseek = "DeepSeek", mock = "Classic (rule-based)")
 
 theme_set(theme_minimal(base_size = 9) +
@@ -64,7 +65,8 @@ fig1_panel <- function(g, ylab, title, ytrans = "identity") {
     geom_point(data = dm, position = position_dodge(width = 0.55), size = 3) +
     scale_colour_manual(values = COL, drop = FALSE) +
     scale_shape_manual(values = SHP, drop = FALSE) +
-    scale_y_continuous(trans = ytrans, breaks = if (ytrans == "sqrt") SQRT_BREAKS else waiver()) +
+    scale_y_continuous(trans = ytrans, breaks = if (ytrans == "sqrt") SQRT_BREAKS else waiver(),
+                       labels = if (ytrans == "sqrt") SQRT_LABELS else waiver()) +
     labs(x = NULL, y = ylab, title = title, colour = NULL, shape = NULL)
 }
 # One row, two panels (Jared, Oct 22): capital panel letters; civil violence on a
@@ -103,7 +105,8 @@ fig2_row <- function(g, ylab, title, ytrans = "identity") {
     geom_line(data = filter(classic_rep, game == g), linetype = "dashed", linewidth = 0.5) +
     facet_wrap(~mode, nrow = 1) +
     scale_colour_manual(values = COL) + scale_fill_manual(values = COL) +
-    scale_y_continuous(trans = ytrans, breaks = if (ytrans == "sqrt") SQRT_BREAKS else waiver()) +
+    scale_y_continuous(trans = ytrans, breaks = if (ytrans == "sqrt") SQRT_BREAKS else waiver(),
+                       labels = if (ytrans == "sqrt") SQRT_LABELS else waiver()) +
     labs(x = "Step", y = ylab, title = title, colour = NULL, fill = NULL)
 }
 fig2 <- (fig2_row("pd", "Cooperation rate", "A  Prisoner's dilemma") /
@@ -244,7 +247,7 @@ ed2 <- ggplot(cv500, aes(step, mobilized, colour = Agent)) +
   geom_line(linewidth = 0.5) +
   geom_vline(xintercept = 100, linetype = "dotted", colour = "grey50") +
   scale_colour_manual(values = COL) +
-  scale_y_continuous(trans = "sqrt", breaks = SQRT_BREAKS) +
+  scale_y_continuous(trans = "sqrt", breaks = SQRT_BREAKS, labels = SQRT_LABELS) +
   labs(x = "Step", y = "Mobilized share (sqrt scale)", colour = NULL,
        title = "CV calculator arms to 500 steps (1 seed each); dotted = 100-step horizon used in the main analysis")
 save_fig(ed2, "ed2_cv_longrun", height = 3.2)
@@ -270,7 +273,7 @@ ed3 <- ggplot() +
   geom_point(data = zh, aes(mode, mobilized, colour = Agent, shape = language), size = 2.6, stroke = 0.9) +
   facet_wrap(~ Agent) +
   scale_colour_manual(values = COL, guide = "none") + scale_shape_manual(values = c(1, 16)) +
-  scale_y_continuous(trans = "sqrt", breaks = SQRT_BREAKS) +
+  scale_y_continuous(trans = "sqrt", breaks = SQRT_BREAKS, labels = SQRT_LABELS) +
   labs(x = NULL, y = "Mobilized share, steps 51-100 (sqrt scale)", shape = NULL,
        title = "CV robustness check: Chinese-language prompts (one seed) vs English prompts (five seeds)",
        caption = "Faint dots = individual English seeds. Chinese-language arms have one seed each and are descriptive only.") +
